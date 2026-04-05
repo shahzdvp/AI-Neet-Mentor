@@ -1,0 +1,25 @@
+# ─────────────────────────────────────────────────────────────────
+# THE ACADEMIC SANCTUARY — Python Dependencies
+# ─────────────────────────────────────────────────────────────────
+# Install everything with:
+#   pip install -r requirements.txt
+# ─────────────────────────────────────────────────────────────────
+
+# ── Web Framework ─────────────────────────────────────────────────
+flask==3.0.3                  # The web server framework
+flask-cors==4.0.1             # Allows the browser (frontend) to call our API
+
+# ── LLM (Groq) ────────────────────────────────────────────────────
+groq==0.9.0                   # Official Groq Python client
+
+# ── RAG / Vector Store ────────────────────────────────────────────
+chromadb==0.5.3               # Local vector database (stores NCERT embeddings)
+sentence-transformers==3.0.1  # Converts text → vectors (runs locally, free)
+
+# ── Document Loading (for NCERT ingestion) ───────────────────────
+pypdf==4.3.1                  # Reads PDF files (for NCERT textbooks)
+langchain-text-splitters==0.2.2  # Splits long text into smart chunks
+
+# ── Utilities ─────────────────────────────────────────────────────
+python-dotenv==1.0.1          # Loads .env file (keeps secrets out of code)
+pydantic==2.8.2               # Data validation for API request/response models

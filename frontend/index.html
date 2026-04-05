@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Neet Mentor</title>
+
+  <!-- Google Fonts -->
+  <!-- We load 2 fonts: Manrope (headlines) + Inter (body text) -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Material Icons -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet"
+  />
+
+  <!--
+    THIS IS THE KEY LINE.
+    rel="stylesheet" tells the browser: "this is a CSS file, use it to style the page"
+    href="style.css" is the path to our CSS file (same folder = just the filename)
+    This is how HTML and CSS files talk to each other.
+  -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!--
+    ============================================================
+    WHAT IS SEMANTIC HTML?
+    ============================================================
+    HTML has two types of elements:
+    1. GENERIC: <div> and <span> — they mean nothing, just containers
+    2. SEMANTIC: <header>, <nav>, <main>, <section>, <footer>
+                 — they describe what the content IS
+
+    WHY use semantic elements?
+    - Search engines (Google) understand your page structure better
+    - Screen readers tell blind users "this is the navigation"
+    - Your code is easier to read and maintain
+    
+    RULE OF THUMB:
+    Ask yourself: "what is this content's ROLE?"
+    Navigation? → <nav>
+    Main content? → <main>
+    A standalone section? → <section>
+    Supporting info? → <aside>
+    Otherwise? → <div>
+    ============================================================
+  -->
+
+  <!-- ============================================================
+    NAVIGATION
+    ============================================================ -->
+  <header class="site-header">
+    <!--
+      class="site-header" — we give this element a name.
+      In style.css, we write .site-header { ... } to style it.
+      The dot (.) in CSS means "class."
+      
+      WHY <header> and not <div>?
+      <header> is semantic. It tells the browser:
+      "this is the header area of the page or section."
+    -->
+
+    <nav class="nav-container">
+      <!--
+        <nav> is semantic for navigation.
+        nav-container is a class we'll style in CSS.
+        It holds the logo and the nav buttons side by side.
+      -->
+
+      <!-- Logo -->
+      <a href="#" class="nav-logo">AI Neet Mentor</a>
+      <!--
+        <a href="#"> is a link.
+        href="#" means "link to top of this page" (placeholder for now)
+        nav-logo class will style this as our branded name
+      -->
+
+      <!-- Nav right side -->
+      <div class="nav-actions">
+        <!--
+          <div> here is fine — this is just a generic grouping container.
+          We're grouping the icon button + CTA button together.
+          nav-actions will make them sit side by side.
+        -->
+
+        <button class="nav-icon-btn" aria-label="Profile">
+          <!--
+            aria-label="Profile" is for ACCESSIBILITY.
+            When a button has only an icon (no visible text),
+            screen readers can't tell users what it does.
+            aria-label gives it a hidden description that
+            screen readers will read aloud. Always do this.
+          -->
+          <span class="material-symbols-outlined">account_circle</span>
+        </button>
+
+        <a href="chat.html" class="nav-cta-btn">
+          Start Free
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </a>
+
+      </div>
+    </nav>
+  </header>
+
+
+  <!-- ============================================================
+    MAIN — wraps all primary page content
+    <main> tells the browser: "this is the primary content."
+    There should only be ONE <main> per page.
+    ============================================================ -->
+  <main>
+
+    <!-- ============================================================
+      HERO SECTION
+      ============================================================ -->
+    <section class="hero-section">
+      <!--
+        <section> = a standalone thematic chunk of content.
+        Use it when the content could stand alone with a heading.
+        hero-section class will handle all the background + layout.
+      -->
+
+      <!-- Background decorations (purely visual, no content value) -->
+      <!--
+        These divs have NO content — they exist only as CSS drawing surfaces.
+        aria-hidden="true" tells screen readers to IGNORE them completely.
+        They are invisible to assistive technology. Correct behavior.
+      -->
+      <div class="hero-blob hero-blob--top-right" aria-hidden="true"></div>
+      <div class="hero-blob hero-blob--bottom-left" aria-hidden="true"></div>
+      <div class="hero-dot-pattern" aria-hidden="true"></div>
+
+      <!-- Hero content — the actual meaningful content -->
+      <div class="hero-content">
+
+        <!-- Icon badge -->
+        <div class="hero-icon-badge">
+          <span
+            class="material-symbols-outlined hero-icon"
+            style="font-variation-settings: 'FILL' 1"
+          >psychology</span>
+          <!--
+            style="..." inline — we're setting font-variation-settings directly.
+            WHY inline here? Because this is a one-off value specific to this
+            one icon. It's not a pattern we'll reuse. For one-time overrides,
+            inline style is acceptable. For everything else, use a class.
+          -->
+        </div>
+
+        <!-- Headlines -->
+        <div class="hero-headlines">
+          <h1 class="hero-title">
+            Your Personal<br />
+            <!--
+              <br /> forces a line break at this exact point.
+              WHY use it here? Our headline has a deliberate two-line rhythm:
+              "Your Personal" (setup)
+              "NEET Study Companion" (the punchline — different color)
+              Without <br />, it would flow as one long line.
+            -->
+            <span class="hero-title-accent">NEET Study Companion</span>
+            <!--
+              <span> is a generic INLINE container (like <div> but inline).
+              We wrap just the second line in a span so we can
+              give it a different color in CSS.
+            -->
+          </h1>
+
+          <p class="hero-subtitle">
+            Master complex concepts with NCERT-grounded AI explanations
+            and personalized doubt clearance.
+          </p>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="hero-cta-group">
+          <a href="chat.html" class="btn-primary" style="text-decoration:none;">
+            Start Studying / Ask a Doubt
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+          <p class="hero-cta-note">No signup required · Powered by NCERT</p>
+        </div>
+
+        <!-- Trust badges -->
+        <div class="trust-badges">
+          <span class="badge">
+            <span class="material-symbols-outlined badge-icon" style="font-variation-settings:'FILL' 1">verified</span>
+            NCERT Verified
+          </span>
+          <span class="badge">
+            <span class="material-symbols-outlined badge-icon" style="font-variation-settings:'FILL' 1">psychology</span>
+            AI-Powered
+          </span>
+          <span class="badge">
+            <span class="material-symbols-outlined badge-icon" style="font-variation-settings:'FILL' 1">quiz</span>
+            PYQ Trends
+          </span>
+        </div>
+
+      </div>
+      <!-- end .hero-content -->
+
+    </section>
+
+
+    <!-- ============================================================
+      FEATURES SECTION
+      ============================================================ -->
+    <section class="features-section">
+
+      <!-- Section header -->
+      <div class="section-header">
+        <p class="section-eyebrow">Everything you need</p>
+        <!--
+          "Eyebrow text" = the small ALL-CAPS label above a headline.
+          It signals a category before the main heading.
+        -->
+        <h2 class="section-title">Your complete NEET prep toolkit</h2>
+        <p class="section-subtitle">
+          Three focused tools that work together to take you from confused to confident.
+        </p>
+      </div>
+
+      <!-- Cards grid -->
+      <div class="cards-grid">
+
+        <!-- Card 1 — Topic Explainer -->
+        <article class="feature-card">
+          <!--
+            <article> is semantic for self-contained content.
+            A card describing a feature is a perfect use case —
+            it makes sense on its own, even outside this page.
+            WHY not <div>? Because this card has meaning on its own.
+          -->
+          <div class="card-icon-wrap card-icon-wrap--blue">
+            <span class="material-symbols-outlined card-icon" style="font-variation-settings:'FILL' 1">history_edu</span>
+          </div>
+          <h3 class="card-title">Topic-wise Explainer</h3>
+          <p class="card-body">
+            Master NEET concepts with detailed NCERT-grounded explanations
+            and PYQ trends — chapter by chapter.
+          </p>
+          <a href="chat.html" class="card-link">
+            Explore topics
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+        </article>
+
+        <!-- Card 2 — Mock Tests (FEATURED) -->
+        <article class="feature-card feature-card--featured">
+          <!--
+            feature-card--featured is a MODIFIER class.
+            This is BEM (Block Element Modifier) naming convention:
+            Block:    feature-card
+            Modifier: feature-card--featured
+            
+            Two dashes (--) signals: "same component, different variant."
+            In CSS, we can target it with .feature-card--featured { ... }
+            and give it completely different colors without
+            touching the base .feature-card styles.
+            
+            This is how professionals manage design variants.
+          -->
+          <div class="card-icon-wrap card-icon-wrap--white">
+            <span class="material-symbols-outlined card-icon" style="font-variation-settings:'FILL' 1">quiz</span>
+          </div>
+          <h3 class="card-title">Mock Tests</h3>
+          <p class="card-body">
+            Test your knowledge with timed, topic-specific MCQs and get
+            detailed AI mistake analysis. Know exactly why you got it wrong.
+          </p>
+          <div class="card-badge">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;font-size:14px">star</span>
+            Most popular
+          </div>
+        </article>
+
+        <!-- Card 3 — Doubt Solver -->
+        <article class="feature-card">
+          <div class="card-icon-wrap card-icon-wrap--teal">
+            <span class="material-symbols-outlined card-icon" style="font-variation-settings:'FILL' 1">live_help</span>
+          </div>
+          <h3 class="card-title">Doubt Solver</h3>
+          <p class="card-body">
+            Get step-by-step breakdowns of any question. Understand why
+            every MCQ option is right or wrong — not just the answer.
+          </p>
+          <a href="chat.html" class="card-link">
+            Clear a doubt
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+        </article>
+
+      </div>
+      <!-- end .cards-grid -->
+
+    </section>
+
+
+    <!-- ============================================================
+      EXPLORE PYQ — Teaser Card
+      ============================================================
+      PURPOSE ON THE LANDING PAGE:
+      Not to show every feature — just enough to make the user
+      curious and confident enough to click "Explore PYQ Bank."
+
+      Three jobs:
+      1. Show what subjects are covered
+      2. Give a real sample question — proof of quality
+      3. One clear CTA to the full page
+
+      Filtering, chapter lists, answers — all on the PYQ page.
+      This is a TEASER, not the full product.
+      ============================================================ -->
+    <section class="pyq-section" id="explore-pyq">
+
+      <div class="section-header">
+        <p class="section-eyebrow">Previous Year Questions</p>
+        <h2 class="section-title">Explore PYQ Bank</h2>
+        <p class="section-subtitle">
+          15+ years of NEET questions — browse by subject and chapter.
+          Know exactly what the exam tests.
+        </p>
+      </div>
+
+      <!-- Teaser card -->
+      <div class="pyq-teaser">
+
+        <!-- LEFT: Subject coverage pills + description -->
+        <div class="pyq-teaser-left">
+
+          <!-- Subject pills — visual proof of coverage -->
+          <!--
+            These three pills show the three subjects at a glance.
+            Each pill has an icon + label + question count.
+            WHY show counts? Numbers are credible.
+            "2400+ questions" is more convincing than "lots of questions."
+          -->
+          <div class="pyq-subject-pills">
+            <div class="pyq-subject-pill">
+              <span class="material-symbols-outlined pyq-subject-icon" style="font-variation-settings:'FILL' 1">science</span>
+              <div>
+                <p class="pyq-subject-name">Physics</p>
+                <p class="pyq-subject-count">820+ questions</p>
+              </div>
+            </div>
+
+            <div class="pyq-subject-pill">
+              <span class="material-symbols-outlined pyq-subject-icon pyq-subject-icon--chem" style="font-variation-settings:'FILL' 1">biotech</span>
+              <div>
+                <p class="pyq-subject-name">Chemistry</p>
+                <p class="pyq-subject-count">740+ questions</p>
+              </div>
+            </div>
+
+            <div class="pyq-subject-pill">
+              <span class="material-symbols-outlined pyq-subject-icon pyq-subject-icon--bio" style="font-variation-settings:'FILL' 1">eco</span>
+              <div>
+                <p class="pyq-subject-name">Biology</p>
+                <p class="pyq-subject-count">960+ questions</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Supporting text + CTA -->
+          <p class="pyq-teaser-body">
+            Filter by subject, drill into any chapter, and see questions
+            from every NEET paper since 2008 — with answer keys.
+          </p>
+
+          <a href="pyq.html" class="btn-primary pyq-teaser-cta">
+            Explore PYQ Bank
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </a>
+          <!--
+            href="pyq.html" — this links to the dedicated PYQ page
+            we'll build later. For now it's a placeholder path.
+            When that page exists, the link will just work.
+          -->
+
+        </div>
+
+        <!-- RIGHT: Sample question card — proof of quality -->
+        <!--
+          WHY show a real question here?
+          Text like "browse questions" is vague.
+          Showing an actual question makes it CONCRETE.
+          The user immediately understands what they'll find inside.
+          This is called "showing, not telling" in UX writing.
+        -->
+        <div class="pyq-teaser-right">
+
+          <!-- "Sample" label -->
+          <div class="pyq-sample-label">
+            <span class="material-symbols-outlined" style="font-size:14px;font-variation-settings:'FILL' 1">preview</span>
+            Sample question
+          </div>
+
+          <!-- The sample question card -->
+          <div class="pyq-sample-card">
+
+            <!-- Year badge -->
+            <span class="pyq-year-badge">NEET 2023 · Biology</span>
+
+            <!-- Question text -->
+            <p class="pyq-sample-q">
+              The oxygen released during photosynthesis comes from the splitting of:
+            </p>
+
+            <!-- Options — A is wrong, B is correct, C and D are wrong -->
+            <!--
+              On the landing page teaser, we show the answer highlighted.
+              WHY reveal the answer here?
+              This is a preview — it shows users the FORMAT and QUALITY.
+              It's not a test. Seeing a clean answered question
+              is more inviting than a blank question with no context.
+            -->
+            <div class="pyq-sample-options">
+
+              <div class="pyq-sample-option">
+                <span class="pyq-option-label">A</span>
+                <span>Carbon dioxide</span>
+              </div>
+
+              <div class="pyq-sample-option pyq-sample-option--correct">
+                <!--
+                  --correct modifier: green tint to show this is the answer.
+                  Only one option gets this class.
+                -->
+                <span class="pyq-option-label pyq-option-label--correct">B</span>
+                <span>Water (H₂O)</span>
+                <span class="material-symbols-outlined pyq-correct-mark" style="font-variation-settings:'FILL' 1">check_circle</span>
+              </div>
+
+              <div class="pyq-sample-option">
+                <span class="pyq-option-label">C</span>
+                <span>Glucose</span>
+              </div>
+
+              <div class="pyq-sample-option">
+                <span class="pyq-option-label">D</span>
+                <span>Both CO₂ and H₂O</span>
+              </div>
+
+            </div>
+            <!-- end .pyq-sample-options -->
+
+          </div>
+          <!-- end .pyq-sample-card -->
+
+          <!-- Footnote under the card -->
+          <p class="pyq-sample-note">
+            Chapter-wise answers, trend analysis, and AI explanations
+            available inside.
+          </p>
+
+        </div>
+        <!-- end .pyq-teaser-right -->
+
+      </div>
+      <!-- end .pyq-teaser -->
+
+    </section>
+
+
+    <!-- ============================================================
+      BOTTOM CTA SECTION
+      ============================================================ -->
+    <section class="bottom-cta-section">
+      <p class="section-eyebrow">Ready to begin?</p>
+      <h2 class="bottom-cta-title">
+        Your NEET rank starts<br />
+        <span class="hero-title-accent">with one question.</span>
+      </h2>
+      <p class="bottom-cta-subtitle">
+        Ask your first doubt. Explore a topic. Take a mock test.
+        However you learn best — AI Neet Mentor is ready.
+      </p>
+      <a href="chat.html" class="btn-primary btn-primary--large" style="text-decoration:none;">
+        Get Started — It's Free
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </a>
+    </section>
+
+  </main>
+
+
+  <!-- ============================================================
+    FOOTER
+    ============================================================ -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="nav-logo">AI Neet Mentor</p>
+      <p class="footer-note">AI-powered study tool for NEET aspirants · Educational use only</p>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

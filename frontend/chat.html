@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ask a Doubt — AI Neet Mentor</title>
+
+  <!-- Google Fonts — same as index.html -->
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+  <!-- Shared design tokens + base styles from style.css -->
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* ============================================================
+       CHAT PAGE — Additional Styles
+       All design tokens from style.css (:root) are reused here.
+       We only add what is unique to this page.
+    ============================================================ */
+
+    /* ── Page shell: full-height flex column ── */
+    .chat-shell {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Chat-specific header ── */
+    .chat-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: rgba(248, 249, 251, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+    .chat-header .nav-container {
+      max-width: 900px;
+    }
+
+    /* Back / logo link */
+    .nav-back-btn {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      font-family: var(--font-headline);
+      color: var(--color-primary);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-pill);
+      transition: background-color 0.2s ease;
+    }
+    .nav-back-btn:hover {
+      background-color: var(--color-surface-card);
+    }
+    .nav-back-btn .material-symbols-outlined {
+      font-size: 1.1rem;
+      color: var(--color-text-muted);
+    }
+
+
+
+    /* ── Scrollable messages ── */
+    .chat-messages-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-7) var(--space-5);
+      scroll-behavior: smooth;
+    }
+    .chat-messages-area::-webkit-scrollbar { width: 4px; }
+    .chat-messages-area::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages-area::-webkit-scrollbar-thumb {
+      background: var(--color-surface-card);
+      border-radius: var(--radius-pill);
+    }
+    .messages-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    /* ── Welcome / empty state ── */
+    .chat-welcome {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+      animation: fadeUp 0.5s ease both;
+    }
+    .chat-welcome-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+    }
+    .ai-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-btn);
+    }
+    .ai-avatar .material-symbols-outlined {
+      color: #fff;
+      font-size: 1.25rem;
+    }
+    .chat-welcome-text { padding-top: 4px; }
+    .chat-welcome-text p {
+      font-size: 1.125rem;
+      line-height: 1.65;
+      color: var(--color-text-primary);
+    }
+    .chat-welcome-badges {
+      display: flex;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .chat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .chat-badge--teal {
+      background-color: rgba(0, 106, 106, 0.1);
+      color: var(--color-secondary);
+    }
+    .chat-badge--navy {
+      background-color: var(--color-surface-card);
+      color: var(--color-text-muted);
+    }
+
+    /* ── Quick action chips ── */
+    .quick-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+      width: 100%;
+    }
+    .quick-action-card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-2);
+      padding: var(--space-4);
+      background-color: var(--color-white);
+      border-radius: var(--radius-lg);
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-align: left;
+      transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
+      box-shadow: var(--shadow-card);
+    }
+    .quick-action-card:hover {
+      box-shadow: var(--shadow-card-hover);
+      border-color: rgba(194, 198, 211, 0.3);
+      transform: translateY(-2px);
+    }
+    .quick-action-card:active { transform: translateY(0); }
+    .quick-action-icon {
+      color: var(--color-primary);
+      font-size: 1.25rem;
+    }
+    .quick-action-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 0.8125rem;
+      color: var(--color-primary);
+    }
+    .quick-action-desc {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      line-height: 1.4;
+    }
+
+    /* ── Message bubbles ── */
+    .message-row {
+      display: flex;
+      gap: var(--space-3);
+      animation: fadeUp 0.3s ease both;
+    }
+    .message-row--user { flex-direction: row-reverse; }
+
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .message-avatar--ai {
+      background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+    }
+    .message-avatar--ai .material-symbols-outlined { color: #fff; font-size: 1rem; }
+    .message-avatar--user { background-color: var(--color-surface-card); }
+    .message-avatar--user .material-symbols-outlined { color: var(--color-primary); font-size: 1rem; }
+
+    .message-bubble {
+      max-width: 78%;
+      padding: var(--space-4) var(--space-5);
+      border-radius: var(--radius-lg);
+      line-height: 1.65;
+      font-size: 0.9375rem;
+    }
+    .message-bubble--ai {
+      background-color: var(--color-white);
+      color: var(--color-text-primary);
+      box-shadow: var(--shadow-card);
+      border-bottom-left-radius: var(--radius-sm);
+    }
+    .message-bubble--user {
+      background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+      color: #fff;
+      border-bottom-right-radius: var(--radius-sm);
+    }
+
+    /* ── Typing indicator ── */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: var(--space-3) var(--space-4);
+      background-color: var(--color-white);
+      border-radius: var(--radius-lg);
+      border-bottom-left-radius: var(--radius-sm);
+      box-shadow: var(--shadow-card);
+      width: fit-content;
+    }
+    .typing-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--color-text-muted);
+      animation: typingBounce 1.2s ease-in-out infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30%           { transform: translateY(-5px); opacity: 1; }
+    }
+
+    /* ── Input bar ── */
+    .chat-input-bar {
+      flex-shrink: 0;
+      background: linear-gradient(to top, var(--color-surface) 60%, transparent);
+      padding: var(--space-4) var(--space-5) var(--space-6);
+    }
+    .chat-input-inner { max-width: 760px; margin: 0 auto; }
+
+    .subject-context-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-3);
+    }
+    .subject-context-label {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+    }
+    .subject-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .subject-pill--active {
+      background-color: var(--color-primary);
+      color: #fff;
+    }
+    .subject-pill--inactive {
+      background-color: var(--color-surface-card);
+      color: var(--color-text-muted);
+    }
+    .subject-pill--inactive:hover {
+      background-color: rgba(0, 52, 111, 0.08);
+      color: var(--color-primary);
+    }
+
+    .chat-input-box {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      background-color: var(--color-white);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2) var(--space-2) var(--space-2) var(--space-5);
+      box-shadow: 0 8px 32px rgba(0, 27, 63, 0.08);
+      border: 1px solid rgba(194, 198, 211, 0.2);
+      transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    }
+    .chat-input-box:focus-within {
+      box-shadow: 0 8px 32px rgba(0, 52, 111, 0.14);
+      border-color: rgba(0, 52, 111, 0.2);
+    }
+    .chat-input-field {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      color: var(--color-text-primary);
+      padding: var(--space-3) 0;
+      resize: none;
+      line-height: 1.5;
+    }
+    .chat-input-field::placeholder { color: rgba(66, 71, 81, 0.5); }
+
+    .chat-input-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+    }
+    .input-icon-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    .input-icon-btn:hover {
+      background-color: var(--color-surface-card);
+      color: var(--color-primary);
+    }
+    .input-icon-btn .material-symbols-outlined { font-size: 1.125rem; }
+
+    .send-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-md);
+      border: none;
+      background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+      cursor: pointer;
+      color: #fff;
+      box-shadow: var(--shadow-btn);
+      transition: box-shadow 0.2s ease, transform 0.15s ease;
+      flex-shrink: 0;
+    }
+    .send-btn:hover {
+      box-shadow: var(--shadow-btn-hover);
+      transform: scale(1.05);
+    }
+    .send-btn:active { transform: scale(0.95); }
+    .send-btn .material-symbols-outlined { font-size: 1.125rem; }
+
+    .chat-disclaimer {
+      text-align: center;
+      font-size: 0.6875rem;
+      color: var(--color-text-muted);
+      opacity: 0.5;
+      margin-top: var(--space-3);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    /* ── Mock Test card above chat ── */
+
+
+    /* ── Mobile bottom nav (hidden) ── */
+    .mobile-bottom-nav { display: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .quick-actions-grid { grid-template-columns: repeat(2, 1fr); }
+
+      .chat-input-bar { padding-bottom: 20px; }
+    }
+
+    @media (max-width: 480px) {
+      .quick-actions-grid { grid-template-columns: 1fr 1fr; }
+      .chat-messages-area { padding: var(--space-5) var(--space-4); }
+    }
+  </style>
+</head>
+
+<body>
+<div class="chat-shell">
+
+  <!-- ============================================================
+    HEADER
+    - Logo links back to index.html
+    - Mode tabs switch the AI's context (Explain / Doubt / Mock / PYQ)
+    - Profile + Settings icons match the home page nav
+  ============================================================ -->
+  <header class="chat-header">
+    <nav class="nav-container">
+
+      <!-- Left: back to home -->
+      <a href="index.html" class="nav-back-btn" aria-label="Back to Home">
+        <span class="material-symbols-outlined">arrow_back</span>
+        AI Neet Mentor
+      </a>
+
+      <!-- Right: profile + settings -->
+      <div class="nav-actions">
+        <button class="nav-icon-btn" aria-label="Profile">
+          <span class="material-symbols-outlined">account_circle</span>
+        </button>
+        <button class="nav-icon-btn" aria-label="Settings">
+          <span class="material-symbols-outlined">settings</span>
+        </button>
+      </div>
+
+    </nav>
+  </header>
+
+
+  <!-- ============================================================
+    MOCK TEST BANNER — above the chat
+  ============================================================ -->
+ 
+
+  <!-- ============================================================
+    MESSAGES AREA
+  ============================================================ -->
+  <div class="chat-messages-area" id="messagesArea">
+    <div class="messages-inner" id="messagesInner">
+
+      <!-- Welcome / empty state -->
+      <div class="chat-welcome" id="welcomeState">
+
+        <div class="chat-welcome-row">
+          <div class="ai-avatar">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">auto_stories</span>
+          </div>
+          <div class="chat-welcome-text">
+            <p>Hello! I'm your NCERT-grounded NEET study companion. How can I help you today?</p>
+            <div class="chat-welcome-badges">
+              <span class="chat-badge chat-badge--teal">
+                <span class="material-symbols-outlined" style="font-size:0.75rem;font-variation-settings:'FILL' 1;">verified</span>
+                NCERT Verified
+              </span>
+              <span class="chat-badge chat-badge--navy">NEET 2026 Ready</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick action chips -->
+        <div class="quick-actions-grid">
+
+          <button class="quick-action-card" onclick="justFocus()">
+            <span class="material-symbols-outlined quick-action-icon" style="font-variation-settings:'FILL' 1;">auto_stories</span>
+            <span class="quick-action-title">Topic Explainer</span>
+            <span class="quick-action-desc">Simplify complex biology &amp; physics</span>
+          </button>
+
+          <button class="quick-action-card" onclick="justFocus()">
+            <span class="material-symbols-outlined quick-action-icon" style="font-variation-settings:'FILL' 1;">quiz</span>
+            <span class="quick-action-title">Doubt Solver</span>
+            <span class="quick-action-desc">Instant answers for tricky MCQs</span>
+          </button>
+
+          <button class="quick-action-card" onclick="justFocus()">
+            <span class="material-symbols-outlined quick-action-icon" style="font-variation-settings:'FILL' 1;">assignment_turned_in</span>
+            <span class="quick-action-title">Mock Test</span>
+            <span class="quick-action-desc">Practice full-length papers</span>
+          </button>
+
+          <button class="quick-action-card" onclick="justFocus()">
+            <span class="material-symbols-outlined quick-action-icon" style="font-variation-settings:'FILL' 1;">analytics</span>
+            <span class="quick-action-title">PYQ Analyser</span>
+            <span class="quick-action-desc">Trend analysis of previous years</span>
+          </button>
+
+        </div>
+      </div>
+      <!-- end #welcomeState -->
+
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+    INPUT BAR
+  ============================================================ -->
+  <div class="chat-input-bar">
+    <div class="chat-input-inner">
+
+      <!-- Subject context pills -->
+      <div class="subject-context-bar">
+        <span class="subject-context-label">Subject:</span>
+        <button class="subject-pill subject-pill--active"   onclick="setSubject(this)">All</button>
+        <button class="subject-pill subject-pill--inactive" onclick="setSubject(this)">Biology</button>
+        <button class="subject-pill subject-pill--inactive" onclick="setSubject(this)">Physics</button>
+        <button class="subject-pill subject-pill--inactive" onclick="setSubject(this)">Chemistry</button>
+      </div>
+
+      <div class="chat-input-box">
+        <textarea
+          id="chatInput"
+          class="chat-input-field"
+          placeholder="Ask about Human Physiology or organic chemistry…"
+          rows="1"
+          aria-label="Type your question"
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+        <div class="chat-input-actions">
+          <button class="input-icon-btn" aria-label="Attach file">
+            <span class="material-symbols-outlined">attachment</span>
+          </button>
+          <button class="send-btn" onclick="sendMessage()" aria-label="Send message">
+            <span class="material-symbols-outlined">arrow_upward</span>
+          </button>
+        </div>
+      </div>
+
+      <p class="chat-disclaimer">
+        AI Neet Mentor may provide simplified medical information for educational purposes only.
+      </p>
+
+    </div>
+  </div>
+
+
+</div><!-- end .chat-shell -->
+
+
+<script>
+  /* ==========================================================================
+     FRONTEND JS — Connected to the Flask Backend
+     ==========================================================================
+     HOW THIS WORKS:
+     The frontend was previously using fake simulated replies.
+     Now it makes a real HTTP POST request to our Flask API at /api/chat.
+
+     fetch() is the browser's built-in HTTP client.
+     It sends JSON to the backend and receives JSON back.
+
+     SESSION MANAGEMENT:
+     session_id is a unique string that groups messages in one conversation.
+     On first load it's null. The backend creates one and returns it.
+     We store it in memory and send it with every subsequent message.
+     This gives the AI "memory" within a browser tab session.
+  ========================================================================== */
+
+  /* ── State ── */
+  let currentMode = 'explain';
+  let currentSubject = 'All';
+  let sessionId = null;           // Set after first API response
+
+  /* ── Backend URL ──────────────────────────────────────────────────────────
+     When running Flask locally: http://127.0.0.1:5000
+     When serving frontend FROM Flask (python app.py): just /api/chat works.
+     We auto-detect: if this page is served by Flask, use relative URL.
+     If opened as a file:// or different port, use the full local URL.
+  ── */
+  const API_BASE = (
+    window.location.protocol === 'file:' || window.location.port === '5500'
+  ) ? 'http://127.0.0.1:5000' : '';
+
+  const CHAT_URL = `${API_BASE}/api/chat`;
+
+  /* ── Mode placeholders ────────────────────────────────────────────────── */
+  const modePlaceholders = {
+    explain: 'Ask about any NCERT topic to get a clear explanation…',
+    doubt:   'Paste your MCQ or describe your doubt…',
+  };
+
+  /* ── Scroll helpers ───────────────────────────────────────────────────── */
+  function scrollToBottom() {
+    const area = document.getElementById('messagesArea');
+    area.scrollTop = area.scrollHeight;
+  }
+
+  function hideWelcome() {
+    const ws = document.getElementById('welcomeState');
+    if (ws) { ws.style.display = 'none'; }
+  }
+
+  function formatMarkdown(text) {
+  return text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`(.+?)`/g, '<code style="background:var(--color-surface-card);padding:2px 6px;border-radius:4px;font-size:0.875em;">$1</code>')
+    .replace(/^#{1,3} (.+)$/gm, '<strong>$1</strong>')
+    .replace(/(📖 Source:.*)/g, '<div style="margin-top:12px;padding:8px 12px;background:rgba(0,52,111,0.06);border-left:3px solid #00346f;border-radius:0 6px 6px 0;font-size:0.8125rem;color:#00346f;">$1</div>')
+    .replace(/\n\n/g, '</p><p style="margin:8px 0">')
+    .replace(/\n/g, '<br>');
+  }
+
+  /* ── Render a message bubble ──────────────────────────────────────────── */
+  function appendMessage(text, sender) {
+    hideWelcome();
+    const inner = document.getElementById('messagesInner');
+    const row   = document.createElement('div');
+    row.className = `message-row${sender === 'user' ? ' message-row--user' : ''}`;
+
+    const avatar = document.createElement('div');
+    if (sender === 'ai') {
+      avatar.className = 'message-avatar message-avatar--ai';
+      avatar.innerHTML = '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1;font-size:1rem;">auto_stories</span>';
+    } else {
+      avatar.className = 'message-avatar message-avatar--user';
+      avatar.innerHTML = '<span class="material-symbols-outlined" style="font-size:1rem;">person</span>';
+    }
+
+    const bubble = document.createElement('div');
+    bubble.className = `message-bubble message-bubble--${sender}`;
+    // Replace newlines with <br> so paragraph breaks render correctly.
+    bubble.innerHTML = formatMarkdown(text);
+
+    row.appendChild(avatar);
+    row.appendChild(bubble);
+    inner.appendChild(row);
+    scrollToBottom();
+  }
+
+  /* ── Typing indicator (3 animated dots) ──────────────────────────────── */
+  function showTyping() {
+    const inner = document.getElementById('messagesInner');
+    const row   = document.createElement('div');
+    row.id      = 'typingRow';
+    row.className = 'message-row';
+
+    const avatar = document.createElement('div');
+    avatar.className = 'message-avatar message-avatar--ai';
+    avatar.innerHTML = '<span class="material-symbols-outlined" style="font-variation-settings:\'FILL\' 1;font-size:1rem;">auto_stories</span>';
+
+    const ind = document.createElement('div');
+    ind.className = 'typing-indicator';
+    ind.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+
+    row.appendChild(avatar);
+    row.appendChild(ind);
+    inner.appendChild(row);
+    scrollToBottom();
+  }
+
+  function hideTyping() {
+    const row = document.getElementById('typingRow');
+    if (row) row.remove();
+  }
+
+  /* ── CORE: Send message to Flask backend ──────────────────────────────── */
+  async function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const text  = input.value.trim();
+    if (!text) return;
+
+    // Show user's message immediately (optimistic UI)
+    appendMessage(text, 'user');
+    input.value = '';
+    autoResize(input);
+    showTyping();
+
+    try {
+      /*
+       * fetch() sends an HTTP POST request to our Flask API.
+       * - method: "POST"   → tells the server we're sending data
+       * - headers:         → tells Flask the body is JSON
+       * - body:            → the actual JSON payload (stringified)
+       *
+       * await pauses execution here until the response arrives.
+       * This is asynchronous — the browser stays responsive while waiting.
+       */
+      const response = await fetch(CHAT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message:    text,
+          subject:    currentSubject,
+          session_id: sessionId,     // null on first message, then reused
+        }),
+      });
+      
+
+      hideTyping();
+
+      if (!response.ok) {
+        // HTTP error (4xx / 5xx)
+        const errData = await response.json().catch(() => ({}));
+        appendMessage(
+          `⚠️ Error: ${errData.error || 'Something went wrong. Please try again.'}`,
+          'ai'
+        );
+        return;
+      }
+
+      /*
+       * response.json() parses the JSON body the Flask server returned.
+       * data looks like: { answer: "...", sources: [...], session_id: "..." }
+       */
+      const data = await response.json();
+      console.log("API sources:", JSON.stringify(data.sources, null, 2));
+
+      // Save the session_id for all future messages in this tab
+      if (data.session_id) sessionId = data.session_id;
+
+      // Build citation from sources array
+      let fullAnswer = data.answer;
+
+      if (data.sources && data.sources.length > 0) {
+        const seen = new Set();
+        const citationLines = [];
+
+        data.sources.forEach(s => {
+          const page    = s.page_number && s.page_number !== '—' ? `, Page ${s.page_number}` : '';
+          const chNo    = s.chapter_no ? `Chapter ${s.chapter_no}: ` : '';
+          const key     = `${s.subject}-${s.chapter}-${s.page_number}`;
+
+          if (!seen.has(key) && s.chapter && s.chapter !== 'NCERT') {
+            seen.add(key);
+            citationLines.push(
+              `📖 Source: NCERT ${s.subject} Class ${s.class} — ${chNo}${s.chapter}${page}`
+            );
+          }
+        });
+
+        // Only append if LLM didn't already write a citation
+        if (citationLines.length > 0 && !fullAnswer.includes('📖 Source:')) {
+          fullAnswer += '\n\n' + citationLines.join('\n');
+        }
+      }
+
+      // Show the AI's answer with citation
+      appendMessage(fullAnswer, 'ai');
+
+    } catch (networkError) {
+      /*
+       * This catches network-level failures:
+       * - Backend server is not running
+       * - No internet connection
+       * - CORS blocked (if backend URL is wrong)
+       */
+      hideTyping();
+      appendMessage(
+        '⚠️ Could not reach the server. Make sure the Flask backend is running on port 5000.',
+        'ai'
+      );
+      console.error('Network error:', networkError);
+    }
+  }
+
+  /* ── Keyboard shortcut: Enter to send, Shift+Enter for newline ───────── */
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  }
+
+  /* ── Auto-resize textarea as user types ──────────────────────────────── */
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 160) + 'px';
+  }
+
+  /* ── Quick-action card helpers ───────────────────────────────────────── */
+  function prefillAndFocus(text) {
+    const input = document.getElementById('chatInput');
+    input.value = text;
+    autoResize(input);
+    input.focus();
+  }
+
+  function justFocus() {
+    document.getElementById('chatInput').focus();
+  }
+
+  /* ── Mode switcher (Explain / Doubt Solver tabs) ─────────────────────── */
+  function setMode(btn, mode) {
+    currentMode = mode;
+    document.querySelectorAll('.nav-mode-tab').forEach(t => t.classList.remove('nav-mode-tab--active'));
+    if (btn && btn.classList.contains('nav-mode-tab')) btn.classList.add('nav-mode-tab--active');
+    document.querySelectorAll('.mobile-nav-item').forEach(item => {
+      item.classList.remove('mobile-nav-item--active');
+    });
+    if (btn && btn.classList.contains('mobile-nav-item')) btn.classList.add('mobile-nav-item--active');
+    document.getElementById('chatInput').placeholder = modePlaceholders[mode] || modePlaceholders.explain;
+    document.getElementById('chatInput').focus();
+  }
+
+  /* ── Subject pill switcher ───────────────────────────────────────────── */
+  function setSubject(btn) {
+    document.querySelectorAll('.subject-pill').forEach(p => {
+      p.classList.remove('subject-pill--active');
+      p.classList.add('subject-pill--inactive');
+    });
+    btn.classList.add('subject-pill--active');
+    btn.classList.remove('subject-pill--inactive');
+    // Track the selected subject so it's sent with every API request
+    currentSubject = btn.textContent.trim();
+  }
+</script>
+
+</body>
+</html>

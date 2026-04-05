@@ -1,0 +1,1597 @@
+/*
+  ============================================================
+  ACADEMIC SANCTUARY — style.css
+  ============================================================
+  
+  HOW CSS WORKS — THE BASICS
+  ============================================================
+  Every CSS rule has two parts:
+
+  selector {          ← WHO to style (which HTML element)
+    property: value;  ← WHAT to change
+  }
+
+  Example:
+  h1 {
+    color: red;
+  }
+  This means: "find every <h1> on the page and make text red."
+
+  SELECTORS YOU NEED TO KNOW:
+  h1          → targets the <h1> element (tag selector)
+  .nav-logo   → targets any element with class="nav-logo" (class selector)
+  #main-btn   → targets element with id="main-btn" (id selector — use rarely)
+  .card a     → targets <a> links INSIDE .card (descendant selector)
+  .card:hover → targets .card when mouse is over it (pseudo-class)
+  ============================================================
+*/
+
+
+/* ============================================================
+  1. CSS RESET & BASE STYLES
+  ============================================================
+  
+  WHAT IS A RESET?
+  Every browser (Chrome, Firefox, Safari) has built-in default styles.
+  Chrome gives <h1> a big font-size. Firefox gives <body> a margin.
+  These defaults are inconsistent across browsers.
+  
+  A reset removes or normalizes these defaults so we start clean.
+  ============================================================ */
+
+/*
+  THE UNIVERSAL SELECTOR (*)
+  The asterisk * means: "target EVERY element on the page."
+  
+  box-sizing: border-box — THE MOST IMPORTANT RESET.
+  
+  By default (content-box), when you set width: 200px on a div,
+  and then add padding: 20px, the total width becomes 240px.
+  The padding is ADDED ON TOP of the width. Confusing!
+  
+  With border-box: padding and border are INCLUDED in the width.
+  width: 200px always means 200px total. Much more predictable.
+  Always set this. Every professional project uses it.
+*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;    /* removes default margin from ALL elements */
+  padding: 0;   /* removes default padding from ALL elements */
+}
+
+/*
+  BASE BODY STYLES
+  These apply to the entire page because everything lives inside <body>.
+  Child elements INHERIT certain properties (like font-family and color)
+  from their parent. So setting them on body = setting them everywhere.
+  
+  WHAT IS INHERITANCE?
+  Some CSS properties are inherited (passed down from parent to child):
+  - font-family, font-size, color, line-height → YES, inherited
+  
+  Some are NOT inherited:
+  - background-color, border, padding, margin → NOT inherited
+  
+  That's why we set font-family on body and it works for all text.
+  But we have to set background-color on each element individually.
+*/
+body {
+  font-family: 'Inter', sans-serif;
+  /*
+    'Inter' = our preferred font (loaded from Google Fonts)
+    sans-serif = FALLBACK font if Inter fails to load
+    Always provide a fallback. The browser uses the first font
+    in the list that it can find.
+  */
+
+  background-color: #f8f9fb;
+  /*
+    This is our "surface" color — a very light blue-gray.
+    WHY not white (#ffffff)?
+    Pure white is slightly harsh. #f8f9fb has a subtle warmth
+    that makes long reading sessions easier on the eyes.
+  */
+
+  color: #191c1e;
+  /*
+    Default text color = near-black.
+    WHY not pure black (#000000)?
+    Pure black on white creates extreme contrast that feels harsh.
+    #191c1e is slightly softer but still very readable.
+    This is called "off-black" and used by almost all premium products.
+  */
+
+  line-height: 1.5;
+  /*
+    line-height controls vertical space between lines of text.
+    1.5 means: space = 1.5× the font size.
+    If font-size is 16px, line-height = 24px.
+    
+    WHY 1.5?
+    Too tight (1.0–1.2): lines feel cramped, hard to read
+    Good (1.4–1.6): comfortable, standard for body text
+    Too loose (2.0+): feels disconnected
+  */
+
+  -webkit-font-smoothing: antialiased;
+  /*
+    This makes fonts render smoother on Mac/iOS screens.
+    Without it, fonts look slightly pixelated.
+    -webkit- prefix = Safari/Chrome specific property.
+    Always include it for font quality.
+  */
+}
+
+/*
+  ANCHOR TAG RESET
+  By default, <a> links are blue and underlined. We reset this
+  and style them specifically where needed.
+*/
+a {
+  text-decoration: none; /* removes underline */
+  color: inherit;        /* inherits the color from its parent element */
+}
+
+/*
+  BUTTON RESET
+  Buttons have a default ugly browser style: gray background, border, etc.
+  We strip all of that and style from scratch.
+*/
+button {
+  cursor: pointer;      /* shows hand cursor on hover (feels clickable) */
+  border: none;         /* removes default button border */
+  background: none;     /* removes default gray background */
+  font-family: inherit; /* inherits Inter from body (buttons don't by default!) */
+  font-size: inherit;   /* inherits font size */
+}
+
+/*
+  MATERIAL SYMBOLS ICON SETUP
+  These settings control how the icon font renders.
+  FILL 0 = outlined style (not filled/solid)
+  wght 400 = normal weight
+  display: inline-block = allows sizing like a box element
+  line-height: 1 = removes extra vertical space icons inherit
+*/
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  display: inline-block;
+  line-height: 1;
+  vertical-align: middle; /* aligns icon with text on the same line */
+}
+
+
+/* ============================================================
+  2. DESIGN TOKENS (CSS CUSTOM PROPERTIES)
+  ============================================================
+  
+  CSS Custom Properties = CSS Variables.
+  You define a value ONCE and reuse it everywhere.
+  
+  :root is a special selector — it targets the root of the page.
+  Variables defined here are available EVERYWHERE in your CSS.
+  
+  SYNTAX:
+  --variable-name: value;    ← define
+  color: var(--variable-name);  ← use
+  
+  WHY do this instead of hardcoding hex everywhere?
+  If your primary color is #00346f in 50 places and you want
+  to change it — with variables, change it in ONE place.
+  Without variables, find-and-replace 50 times and miss some.
+  ============================================================ */
+:root {
+  /* Colors */
+  --color-primary:          #00346f;  /* deep navy blue */
+  --color-primary-dark:     #004a99;  /* slightly lighter navy (for gradient end) */
+  --color-secondary:        #006a6a;  /* teal green */
+
+  --color-surface:          #f8f9fb;  /* page background */
+  --color-surface-low:      #f2f4f6;  /* slightly darker surface (sections) */
+  --color-surface-card:     #eceef0;  /* stat box backgrounds */
+  --color-white:            #ffffff;  /* pure white (elevated cards) */
+
+  --color-text-primary:     #191c1e;  /* near-black, main text */
+  --color-text-muted:       #424751;  /* medium gray, secondary text */
+  --color-text-on-dark:     #ffffff;  /* white text on dark/colored backgrounds */
+
+  --color-border:           rgba(194, 198, 211, 0.2); /* very subtle border */
+
+  /* Typography */
+  --font-headline: 'Manrope', sans-serif;  /* for titles and headings */
+  --font-body:     'Inter', sans-serif;    /* for paragraphs and UI */
+
+  /* Spacing — a consistent scale */
+  /*
+    WHY a spacing scale?
+    If you use random values (13px here, 17px there, 22px somewhere else),
+    the page looks inconsistent and chaotic.
+    A scale means you only ever use these values: 4, 8, 12, 16, 24, 32, 48, 64, 96px
+    Everything lines up. Everything feels intentional. This is called a "spacing system."
+  */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  24px;
+  --space-6:  32px;
+  --space-7:  48px;
+  --space-8:  64px;
+  --space-9:  96px;
+
+  /* Border radius */
+  --radius-sm:   8px;
+  --radius-md:   12px;
+  --radius-lg:   16px;
+  --radius-xl:   24px;
+  --radius-pill: 999px;  /* makes any element a pill/capsule shape */
+
+  /* Shadows */
+  /*
+    Box shadows have 5 values:
+    box-shadow: offset-x  offset-y  blur  spread  color
+    
+    offset-x: horizontal distance (positive = right, negative = left)
+    offset-y: vertical distance (positive = down, negative = up)
+    blur: how blurry/spread the shadow is (0 = sharp, 40px = very diffuse)
+    spread: makes shadow larger or smaller than the element
+    color: usually a dark color at low opacity
+    
+    Our shadow uses a dark blue color (matches our primary color)
+    instead of generic black. This makes shadows feel warmer and
+    more connected to the brand. Called a "colored shadow."
+  */
+  --shadow-card: 0 2px 8px rgba(0, 27, 63, 0.06);
+  --shadow-card-hover: 0 12px 32px rgba(0, 27, 63, 0.12);
+  --shadow-btn: 0 4px 20px rgba(0, 52, 111, 0.25);
+  --shadow-btn-hover: 0 8px 32px rgba(0, 52, 111, 0.38);
+}
+
+
+/* ============================================================
+  3. REUSABLE UTILITY STYLES
+  ============================================================
+  These are small helper classes used in multiple places.
+  Build them once, use everywhere.
+  ============================================================ */
+
+/*
+  CONTAINER
+  A container constrains the max width of content and centers it.
+  Without it, text on a wide monitor would stretch 1900px wide — unreadable.
+  max-width: 1024px = content never wider than 1024px
+  margin: 0 auto = centers the element horizontally
+    (0 = no top/bottom margin, auto = browser splits left+right equally)
+*/
+.container {
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 var(--space-5);  /* 24px sides so content doesn't touch edges */
+}
+
+
+/* ============================================================
+  4. NAVIGATION
+  ============================================================ */
+
+.site-header {
+  /*
+    position: fixed — removes this element from normal document flow
+    and pins it to the viewport.
+    "Normal flow" = elements stack top to bottom. Fixed = floats above.
+  */
+  position: fixed;
+
+  /*
+    top: 0; left: 0; right: 0 — stretch from left to right edge of screen.
+    top: 0 = sticks to the very top.
+    left: 0 + right: 0 = full width (same as width: 100%, but more reliable)
+  */
+  top: 0;
+  left: 0;
+  right: 0;
+
+  /*
+    z-index controls stacking order (like layers in Photoshop).
+    Higher number = appears on top.
+    z-index: 100 ensures nav is ABOVE everything (page content, images, etc.)
+    We use 100 as a safe high number.
+  */
+  z-index: 100;
+
+  background-color: rgba(248, 249, 251, 0.85);
+  /*
+    rgba() lets us set opacity on a color.
+    rgba(r, g, b, alpha) — alpha: 0 = invisible, 1 = fully opaque
+    0.85 = 85% opaque, 15% see-through.
+    WHY semi-transparent? So page content blurs underneath as you scroll.
+    Creates the "frosted glass" effect.
+  */
+
+  backdrop-filter: blur(20px);
+  /*
+    backdrop-filter: blur() blurs WHATEVER IS BEHIND the element.
+    This creates the frosted glass / macOS effect.
+    20px = strong blur (subtle would be 4-8px, dramatic is 20px+)
+    
+    WHY this + semi-transparent background?
+    The blur only shows if the background is partially transparent.
+    If it were fully opaque (alpha: 1), nothing behind would show → no blur effect.
+  */
+
+  border-bottom: 1px solid var(--color-border);
+  /*
+    border-bottom: applies a border ONLY on the bottom side.
+    (vs border: which applies all four sides)
+    1px = very thin
+    solid = a continuous line (other options: dashed, dotted)
+    var(--color-border) = our very subtle border color
+  */
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px var(--space-5);
+  /*
+    padding shorthand with 2 values:
+    padding: top-bottom  left-right
+    padding: 16px 24px = 16px top and bottom, 24px left and right
+  */
+
+  display: flex;
+  /*
+    display: flex activates FLEXBOX on this element.
+    Flexbox makes children sit side by side by default.
+    Without flex, everything stacks vertically (block elements).
+    
+    FLEXBOX CORE CONCEPTS:
+    - The element you put display:flex on = the "flex container"
+    - Its direct children = "flex items"
+    - Main axis: horizontal (left → right) by default
+    - Cross axis: vertical (top → bottom) by default
+  */
+
+  align-items: center;
+  /*
+    align-items controls alignment on the CROSS axis (vertical here).
+    center = vertically center all flex items.
+    Without this, items would stretch to fill the full height.
+  */
+
+  justify-content: space-between;
+  /*
+    justify-content controls alignment on the MAIN axis (horizontal here).
+    space-between = push first item to left edge, last item to right edge,
+                    distribute remaining space between them.
+    Perfect for nav: logo left, actions right.
+  */
+}
+
+.nav-logo {
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 0.9375rem;  /* 15px */
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+  /*
+    letter-spacing: space between characters.
+    Negative value (-0.02em) = slightly compressed = looks premium.
+    em unit = relative to the current font size.
+    -0.02em on 18px font = -0.36px tighter per character.
+    
+    WHY tighter spacing on headlines?
+    Large bold type with default spacing looks loose and cheap.
+    Tightening it makes headlines look intentional and crafted.
+    You'll see this on Apple, Linear, Stripe — every premium brand.
+  */
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  /*
+    gap: space BETWEEN flex (or grid) items.
+    Better than margin because:
+    - margin applies to each item individually (can cause issues at edges)
+    - gap ONLY adds space between items, never on the outside
+    var(--space-3) = 12px gap between icon and CTA button
+  */
+}
+
+.nav-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-pill); /* perfect circle (because width = height) */
+
+  color: var(--color-text-muted);
+  background-color: transparent;
+
+  transition: background-color 0.2s ease;
+  /*
+    transition: smooth animation between states.
+    SYNTAX: transition: property  duration  timing-function
+    
+    property: which CSS property to animate (background-color here)
+    duration: how long the animation takes (0.2s = 200 milliseconds = fast)
+    timing-function: the speed curve of the animation
+      - ease = starts fast, ends slow (most natural)
+      - linear = constant speed
+      - ease-in = starts slow, ends fast
+      - ease-out = starts fast, ends slow (same as ease, slightly different)
+    
+    Without transition: changes are INSTANT and jarring.
+    With transition: changes are smooth and polished.
+  */
+}
+
+.nav-icon-btn:hover {
+  /*
+    :hover is a "pseudo-class" — it targets the element
+    only when the mouse cursor is on top of it.
+    
+    When hovered, we change the background color.
+    The transition above makes this change smooth.
+  */
+  background-color: var(--color-surface-card);
+}
+
+.nav-cta-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+
+  background-color: var(--color-primary);
+  color: var(--color-text-on-dark);
+  padding: var(--space-2) var(--space-4);   /* 8px top/bottom, 16px left/right */
+  border-radius: var(--radius-pill);
+  font-size: 0.875rem;    /* 14px */
+  font-weight: 600;
+
+  transition: background-color 0.2s ease;
+}
+
+.nav-cta-btn:hover {
+  background-color: var(--color-primary-dark);
+}
+
+
+/* ============================================================
+  5. HERO SECTION
+  ============================================================ */
+
+.hero-section {
+  /*
+    position: relative — WHY?
+    The background blobs (.hero-blob) need to be positioned
+    relative to this section, not relative to the whole page.
+    position: relative on the parent establishes it as the
+    "positioning context" for absolute children.
+    
+    RULE: position: absolute child always positions relative
+    to its nearest ancestor that has position: relative (or fixed/absolute).
+  */
+  position: relative;
+
+  min-height: 100vh;
+  /*
+    min-height vs height:
+    height: 100vh = EXACTLY viewport height — if content is taller, it overflows.
+    min-height: 100vh = AT LEAST viewport height — grows if content is taller.
+    min-height is almost always what you want.
+    
+    vh = viewport height unit. 100vh = 100% of screen height.
+  */
+
+  display: flex;
+  flex-direction: column;
+  /*
+    flex-direction: column — changes the main axis to VERTICAL.
+    Default is row (horizontal). Column = items stack top to bottom.
+  */
+  align-items: center;       /* horizontal centering (cross axis when flex-direction:column) */
+  justify-content: center;   /* vertical centering (main axis) */
+
+  padding: 72px var(--space-5) var(--space-7);
+  /*
+    CHANGED: padding-top 120px → 88px
+    Nav height is ~68px. We only need ~20px breathing room above content.
+    120px was 52px of wasted space pushing the CTA below the fold.
+
+    padding-bottom: var(--space-9) → var(--space-7)
+    64px bottom instead of 96px. Hero doesn't need that much
+    breathing room at the bottom — the next section provides separation.
+  */
+  /*
+    padding with 3 values:
+    padding: top  left-right  bottom
+    120px top = accounts for fixed nav height (~80px) + breathing room
+    24px left/right = side padding
+    96px bottom = generous bottom space
+  */
+
+  overflow: hidden;
+  /*
+    The background blobs extend OUTSIDE the hero section boundaries.
+    overflow: hidden clips (cuts off) anything that overflows.
+    Without this, the blobs would create horizontal scrollbars.
+  */
+
+  text-align: center;
+}
+
+/* Background blobs */
+.hero-blob {
+  position: absolute;
+  /*
+    position: absolute removes from normal flow.
+    Now we can place it exactly where we want using top/right/bottom/left.
+    It positions relative to .hero-section (which has position: relative).
+  */
+
+  border-radius: 50%;
+  /*
+    border-radius: 50% on an element with equal width & height = perfect circle.
+    On an element where width ≠ height, 50% = ellipse.
+  */
+
+  filter: blur(100px);
+  /*
+    filter: blur() blurs THE ELEMENT ITSELF (not what's behind it).
+    100px of blur turns a solid circle into a soft, diffuse light blob.
+    This is the "ambient lighting" effect.
+  */
+
+  pointer-events: none;
+  /*
+    pointer-events: none makes this element completely invisible to mouse events.
+    Clicks, hovers, scrolls — they all pass through as if this doesn't exist.
+    Essential for decorative elements that should never interfere with UX.
+  */
+}
+
+.hero-blob--top-right {
+  width: 500px;
+  height: 500px;
+  background-color: #d7e2ff;  /* light blue */
+  opacity: 0.5;
+  top: -150px;
+  right: -150px;
+  /*
+    Negative values for top/right/bottom/left move the element
+    OUTSIDE its container. -150px right = 150px beyond the right edge.
+    Combined with overflow: hidden on parent, this gets clipped cleanly.
+    Result: soft light bleeding in from the corner.
+  */
+}
+
+.hero-blob--bottom-left {
+  width: 600px;
+  height: 600px;
+  background-color: #90efef;  /* light teal */
+  opacity: 0.25;
+  bottom: -200px;
+  left: -200px;
+}
+
+/* Dot pattern */
+.hero-dot-pattern {
+  position: absolute;
+  inset: 0;
+  /*
+    inset: 0 is shorthand for:
+    top: 0; right: 0; bottom: 0; left: 0;
+    This stretches the element to fill its positioned parent completely.
+  */
+
+  background-image: radial-gradient(circle, #9ba8c0 1px, transparent 1px);
+  /*
+    radial-gradient() draws a gradient that radiates from a center point.
+    Here: small 1px blue-gray circle, then transparent.
+    The result = a single dot.
+    Combined with background-size, this dot tiles across the element.
+  */
+
+  background-size: 32px 32px;
+  /*
+    background-size controls how large each tile is.
+    32px 32px = each dot pattern tile is 32×32px
+    The 1px dot sits in the center, surrounded by 31px of transparency.
+    Result: dots appearing every 32px in a grid.
+  */
+
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* Hero content wrapper */
+.hero-content {
+  position: relative;
+  z-index: 1;
+  /*
+    z-index: 1 on the content, while blobs have no z-index (defaults to 0).
+    This ensures text content always appears ABOVE the background decorations.
+  */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  /*
+    CHANGED: gap 48px → 24px between hero elements.
+    Four gaps × 48px = 192px of spacing eaten up.
+    Four gaps × 24px = 96px. Saves 96px — enough to keep CTA above fold.
+    The content still breathes. It just doesn't breathe wastefully.
+  */
+
+  max-width: 720px;
+  width: 100%;
+}
+
+/* Hero icon badge */
+.hero-icon-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-lg);   /* 16px — rounded square, not circle */
+
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+  /*
+    animation shorthand:
+    animation: name  duration  timing-function  delay  fill-mode
+    
+    name: fadeUp (defined in @keyframes below)
+    duration: 0.7s (700ms — feels snappy but not rushed)
+    timing-function: cubic-bezier(0.22, 1, 0.36, 1)
+      This is a custom easing curve. 0.22,1,0.36,1 creates an
+      "ease out back" feel — element overshoots slightly then settles.
+      Much more lively than plain ease.
+    delay: 0.1s — starts 100ms after page load
+    fill-mode: both — element starts in the "from" state BEFORE animation begins,
+      stays in "to" state after it ends. Without "both", elements flash
+      into view before the animation starts.
+  */
+}
+
+.hero-icon {
+  font-size: 2.25rem;   /* 36px */
+  color: var(--color-primary);
+}
+
+/* Hero headlines */
+.hero-headlines {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);  /* 16px between h1 and subtitle */
+
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.25s both;
+  /* delay: 0.25s — appears after the icon */
+}
+
+.hero-title {
+  font-family: var(--font-headline);
+  font-weight: 800;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  /*
+    clamp(min, preferred, max) — RESPONSIVE font sizing without media queries!
+    
+    min: 2.5rem (40px) — never smaller than this
+    preferred: 6vw — 6% of the viewport width (scales with screen)
+    max: 4.5rem (72px) — never larger than this
+    
+    On a 400px phone: 6vw = 24px → but min is 40px, so → 40px
+    On a 800px tablet: 6vw = 48px → within range, so → 48px
+    On a 1200px desktop: 6vw = 72px → at max, so → 72px
+    
+    This is modern responsive typography — no breakpoints needed!
+  */
+
+  color: var(--color-primary);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  /*
+    line-height: 1.1 on big headlines.
+    WHY so tight?
+    At large sizes (40px+), default line-height (1.5) creates huge gaps.
+    1.1 keeps the lines close together, making the headline feel
+    like a single visual unit rather than separate lines.
+  */
+}
+
+.hero-title-accent {
+  color: var(--color-secondary);  /* teal color for the second line */
+}
+
+.hero-subtitle {
+  font-size: 1.125rem;   /* 18px */
+  color: var(--color-text-muted);
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+  /*
+    1.6 line-height for body text — more relaxed than headlines.
+    WHY different from the 1.1 headline?
+    Short headlines: tight is fine, enhances impact.
+    Multi-line body text: needs more breathing room to scan comfortably.
+    The rule: bigger the text, tighter the line-height.
+    Smaller the text, looser the line-height.
+  */
+}
+
+/* Hero CTA group */
+.hero-cta-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.45s both;
+  /* delay: 0.45s — appears AFTER headline */
+}
+
+.hero-cta-note {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  opacity: 0.7;
+}
+
+/* Trust badges */
+.trust-badges {
+  display: flex;
+  flex-wrap: wrap;
+  /*
+    flex-wrap: wrap — if items don't fit in one line, wrap to next line.
+    Without this, items shrink or overflow.
+    With this, on small screens the badges stack naturally.
+  */
+  justify-content: center;
+  gap: var(--space-3);
+
+  animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  padding: var(--space-2) var(--space-4);  /* 8px top/bottom, 16px sides */
+
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.badge-icon {
+  font-size: 1rem;    /* 16px */
+  color: var(--color-secondary);  /* teal icon inside the badge */
+}
+
+
+/* ============================================================
+  PRIMARY BUTTON
+  ============================================================ */
+
+.btn-primary {
+  display: inline-flex;
+  /*
+    display: inline-flex vs display: flex:
+    flex: takes up full width (block behavior)
+    inline-flex: takes up only as much width as its content (inline behavior)
+    For buttons, inline-flex is correct — button sizes to its content.
+  */
+  align-items: center;
+  gap: var(--space-2);
+
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  /*
+    linear-gradient() creates a gradient background.
+    135deg = diagonal direction (top-left to bottom-right)
+    First color at 0% = starts at top-left
+    Second color at 100% = ends at bottom-right
+    
+    WHY gradient instead of solid color?
+    A gradient implies depth and dimension — like light hitting a curved surface.
+    Our DESIGN.md calls this the "Deep Focus" gradient.
+    It's a subtle but effective premium detail.
+  */
+
+  color: var(--color-text-on-dark);  /* white */
+  padding: var(--space-4) var(--space-7);  /* 16px top/bottom, 48px sides */
+  border-radius: var(--radius-pill);
+
+  font-size: 1.125rem;    /* 18px */
+  font-weight: 600;
+  font-family: var(--font-body);
+
+  box-shadow: var(--shadow-btn);
+  /*
+    The shadow gives the button a "floating" appearance.
+    Dark blue shadow (not black) matches our brand color.
+    This subtle colored shadow is a key detail that separates
+    amateur designs from professional ones.
+  */
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  /*
+    Two properties in one transition:
+    transform: for the hover lift effect
+    box-shadow: for the shadow intensifying on hover
+    Same duration (0.25s) so they animate together.
+  */
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  /*
+    transform: translateY(-2px) moves the button UP 2px on hover.
+    Negative Y = upward.
+    Combined with a bigger shadow = looks like the button is "lifting off."
+    This is called a "lift" effect — very common on CTAs.
+    Small value (-2px) keeps it subtle and elegant.
+  */
+  box-shadow: var(--shadow-btn-hover);
+}
+
+.btn-primary:active {
+  /*
+    :active = the brief moment the button is being CLICKED (pressed down).
+    We reverse the lift to simulate pressing a physical button.
+  */
+  transform: translateY(0px) scale(0.98);
+  /*
+    scale(0.98) = shrinks to 98% of its size.
+    Combined with translateY(0) = button goes back to normal position.
+    Result: button "presses in" when clicked. Tactile feedback.
+  */
+}
+
+.btn-primary--large {
+  font-size: 1.25rem;      /* 20px — larger variant for bottom CTA */
+  padding: var(--space-5) var(--space-8);  /* 24px top/bottom, 64px sides */
+}
+
+
+/* ============================================================
+  6. FEATURES SECTION
+  ============================================================ */
+
+.features-section {
+  background-color: var(--color-surface-low);
+  /*
+    A slightly different background creates a "section break"
+    without using any borders or dividers.
+    This is the "No-Line Rule" from DESIGN.md — use background
+    color shifts instead of borders to separate sections.
+  */
+  padding: var(--space-9) var(--space-5);  /* 96px top/bottom */
+}
+
+/* Section header */
+.section-header {
+  text-align: center;
+  margin-bottom: var(--space-8);   /* 64px below header, before cards */
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  /*
+    Setting margin-left and margin-right to auto after max-width
+    centers the element horizontally.
+    We keep margin-bottom as var(--space-8) so it's not overwritten.
+    (margin shorthand would overwrite the bottom margin)
+  */
+}
+
+.section-eyebrow {
+  /*
+    "Eyebrow text" = the small label above a main heading.
+    Signals: "here's what category of content is coming."
+  */
+  font-size: 0.8125rem;   /* 13px — intentionally small */
+  font-weight: 600;
+  color: var(--color-secondary);   /* teal */
+  text-transform: uppercase;
+  /*
+    text-transform: uppercase — ALL CAPS via CSS.
+    WHY not write it in HTML as all caps?
+    If you write it in HTML: the screen reader reads each letter individually.
+    If you do it via CSS: the screen reader reads the word normally,
+    but it visually displays as uppercase. Better accessibility.
+  */
+  letter-spacing: 0.15em;   /* very spread out, typical for ALL CAPS labels */
+  margin-bottom: var(--space-3);
+}
+
+.section-title {
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: clamp(1.75rem, 3.5vw, 2.25rem);  /* responsive between 28px and 36px */
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.section-subtitle {
+  margin-top: var(--space-4);
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Cards grid */
+.cards-grid {
+  display: grid;
+  /*
+    display: grid activates CSS Grid.
+    Grid is best for 2D layouts (rows AND columns).
+    Flexbox is best for 1D layouts (either rows OR columns).
+    
+    KEY DIFFERENCE:
+    Flexbox: items determine their own size
+    Grid: you define the structure, items fill it
+    
+    Use Grid when: you need items in exact columns
+    Use Flexbox when: items should size naturally
+  */
+
+  grid-template-columns: repeat(3, 1fr);
+  /*
+    repeat(3, 1fr) = create 3 equal columns.
+    1fr = "1 fraction unit" = each column gets 1/3 of available space.
+    
+    If container is 900px:
+    Each column = 900px ÷ 3 = 300px wide.
+    
+    If container is 600px:
+    Each column = 600px ÷ 3 = 200px wide.
+    
+    fr units are FLEXIBLE — they share the space proportionally.
+    This is why the grid always fills the container width perfectly.
+  */
+
+  gap: var(--space-5);   /* 24px between all grid items (rows and columns) */
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* Individual card */
+.feature-card {
+  background-color: var(--color-white);
+  padding: var(--space-6);    /* 32px all sides */
+  border-radius: var(--radius-xl);   /* 24px — noticeably rounded */
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+
+  display: flex;
+  flex-direction: column;
+  /*
+    WHY flex on the card?
+    We want the card-link at the bottom to always sit at the bottom,
+    regardless of how much text is in card-body.
+    We'll use margin-top: auto on .card-link to push it to the bottom.
+  */
+
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  /*
+    Multiple transitions separated by commas.
+    Both animate together but could have different durations.
+  */
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+/* Featured card variant */
+.feature-card--featured {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  border-color: transparent;
+  /*
+    On the featured (dark) card, the border would look wrong.
+    transparent makes it invisible — the border space is still there
+    (preventing layout shift) but it's invisible.
+  */
+}
+
+/* Card icon wrapper */
+.card-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);   /* 8px — slightly rounded square */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-5);    /* 24px below icon, before title */
+}
+
+.card-icon-wrap--blue  { background-color: rgba(0,  52, 111, 0.08); } /* blue tint  */
+.card-icon-wrap--teal  { background-color: rgba(0, 106, 106, 0.08); } /* teal tint  */
+.card-icon-wrap--white { background-color: rgba(255, 255, 255, 0.15); } /* white tint for dark card */
+
+.card-icon {
+  font-size: 1.5rem;  /* 24px */
+  color: var(--color-primary);
+}
+
+/* On the featured dark card, the icon should be white */
+.feature-card--featured .card-icon {
+  /*
+    This is a DESCENDANT SELECTOR.
+    .feature-card--featured .card-icon means:
+    "target .card-icon that is INSIDE .feature-card--featured"
+    
+    This overrides the default .card-icon color
+    but ONLY when inside the featured card.
+    The other cards' icons stay their original color.
+    
+    This is CSS SPECIFICITY — more specific selectors win.
+  */
+  color: var(--color-text-on-dark);
+}
+
+/* Card text */
+.card-title {
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 1.125rem;   /* 18px */
+  color: var(--color-primary);
+  margin-bottom: var(--space-2);
+}
+
+.feature-card--featured .card-title {
+  color: var(--color-text-on-dark);  /* white on dark card */
+}
+
+.card-body {
+  font-size: 0.9375rem;   /* 15px */
+  color: var(--color-text-muted);
+  line-height: 1.6;
+  flex: 1;
+  /*
+    flex: 1 on .card-body makes it grow to fill available space.
+    Since the card is a flex container (flex-direction: column),
+    this pushes card-link to the bottom.
+    This ensures cards in the same row have the link at the same height,
+    even if they have different amounts of text.
+  */
+}
+
+.feature-card--featured .card-body {
+  color: rgba(255, 255, 255, 0.75);
+  /* White at 75% opacity. WHY not 100% white?
+     On a dark background, 100% white for body text would compete
+     with the title (also white). 75% opacity creates hierarchy:
+     title is more prominent, body is supporting. */
+}
+
+/* Card link */
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: var(--space-5);
+  color: var(--color-secondary);  /* teal */
+  font-size: 0.9375rem;
+  font-weight: 600;
+
+  transition: gap 0.2s ease;
+  /*
+    We're transitioning the GAP property.
+    On hover, we'll increase the gap, making the arrow shift right.
+    This creates a subtle "arrow moves away from text" effect on hover.
+    Small detail, big impact.
+  */
+}
+
+.card-link:hover {
+  gap: var(--space-2);  /* 8px — wider gap on hover = arrow shifts right */
+}
+
+/* Card badge (for featured card) */
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-5);
+
+  background-color: rgba(255, 255, 255, 0.15);
+  color: var(--color-text-on-dark);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+
+/* ============================================================
+/* ============================================================
+  7. EXPLORE PYQ — TEASER SECTION
+  ============================================================
+
+  DESIGN GOAL:
+  This section needs to feel substantial enough to earn trust
+  (real question, real numbers) but not try to do everything.
+  It's an advertisement for the PYQ page, not the page itself.
+  ============================================================ */
+
+.pyq-section {
+  background-color: var(--color-surface-low);
+  padding: var(--space-9) var(--space-5);
+}
+
+/*
+  THE TEASER CARD
+  Two columns side by side:
+  Left: subject pills + description + CTA button
+  Right: sample question card
+
+  align-items: stretch — both columns grow to the same height,
+  so the card height is determined by whichever side is taller.
+  This keeps things visually balanced.
+*/
+.pyq-teaser {
+  max-width: 960px;
+  margin: 0 auto;
+  background-color: var(--color-white);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-7);
+
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);    /* 64px gap between the two halves */
+}
+
+/* ── LEFT SIDE ── */
+.pyq-teaser-left {
+  flex: 1;               /* takes all available space */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);   /* 24px between pills, text, and button */
+}
+
+/*
+  SUBJECT PILLS ROW
+  Three pills in a row. Each pill = icon + text stacked.
+  flex-wrap: wrap so they stack on narrow screens.
+*/
+.pyq-subject-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+/*
+  EACH PILL
+  display: flex makes icon and text sit side by side.
+  The pill has a white background + subtle border —
+  it sits slightly elevated on the already-white card.
+  We use border + a very light shadow for a "chip" feel.
+*/
+.pyq-subject-pill {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+
+  background-color: var(--color-surface-low);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+
+  flex: 1;          /* each pill shares available width equally */
+  min-width: 120px; /* never shrink below this — wraps to next line instead */
+}
+
+.pyq-subject-icon {
+  font-size: 1.5rem;   /* 24px */
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+/* Chemistry gets teal icon */
+.pyq-subject-icon--chem { color: var(--color-secondary); }
+
+/* Biology gets a slightly different teal */
+.pyq-subject-icon--bio  { color: #1a7a4a; }
+
+.pyq-subject-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.pyq-subject-count {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-top: 3px;
+}
+
+.pyq-teaser-body {
+  font-size: 0.9375rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.pyq-teaser-cta {
+  /*
+    .btn-primary already gives this button all its styling.
+    This class only overrides the display so it
+    doesn't stretch full-width (buttons are block by default in flex containers).
+  */
+  align-self: flex-start;
+  /*
+    align-self on a flex ITEM overrides the container's align-items
+    for just this one item.
+    flex-start = align to the left edge (don't stretch to full width).
+    Without this, the button would stretch to fill the column width.
+  */
+}
+
+/* ── RIGHT SIDE: SAMPLE QUESTION CARD ── */
+.pyq-teaser-right {
+  width: 380px;
+  flex-shrink: 0;
+  /*
+    Fixed width — the question card has a defined size.
+    flex-shrink: 0 prevents it from compressing when space is tight.
+  */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/*
+  "SAMPLE QUESTION" LABEL
+  Sits above the card. Tells the user what they're looking at.
+  Small, muted, with an icon.
+*/
+.pyq-sample-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+/*
+  THE SAMPLE QUESTION CARD
+  Sits on a slightly different background (surface-low)
+  so it appears nested/inset inside the white teaser card.
+  This is surface hierarchy in action:
+  Page bg → teaser card (white) → sample card (surface-low) = 3 levels of depth.
+*/
+.pyq-sample-card {
+  background-color: var(--color-surface-low);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Year badge — reused from the old interactive section */
+.pyq-year-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-secondary);
+  background-color: rgba(0, 106, 106, 0.08);
+  padding: 3px var(--space-3);
+  border-radius: var(--radius-pill);
+}
+
+.pyq-sample-q {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  line-height: 1.55;
+}
+
+/* Options list */
+.pyq-sample-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.pyq-sample-option {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-white);
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+/*
+  CORRECT OPTION
+  Green tint. The correct answer is immediately visible.
+  On a landing page teaser this is fine — we want users
+  to see the quality of content, not test them.
+*/
+.pyq-sample-option--correct {
+  background-color: rgba(0, 106, 106, 0.06);
+  border-color: rgba(0, 106, 106, 0.3);
+  color: var(--color-secondary);
+  font-weight: 600;
+}
+
+/* The A/B/C/D circle label */
+.pyq-option-label {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: var(--color-surface-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+/* Correct label — filled with teal */
+.pyq-option-label--correct {
+  background-color: var(--color-secondary);
+  color: var(--color-white);
+}
+
+.pyq-correct-mark {
+  font-size: 1rem;
+  color: var(--color-secondary);
+  margin-left: auto; /* pushes the icon to the far right */
+}
+
+/* Small note beneath the sample card */
+.pyq-sample-note {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  opacity: 0.7;
+  line-height: 1.5;
+}
+
+  /*8. BOTTOM CTA SECTION
+  ============================================================ */
+
+.bottom-cta-section {
+  /*
+    WHY the change:
+    The section itself should be FULL WIDTH — it's a page block.
+    max-width on a <section> shrinks the entire block to 700px,
+    which looks detached from the full-width sections above it.
+
+    Instead: section = full width, padding only.
+    Children are centered via flex + align-items: center.
+    We also cap the title width with max-width on the title itself.
+  */
+  padding: var(--space-9) var(--space-5);
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.bottom-cta-title {
+  font-family: var(--font-headline);
+  font-weight: 800;
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  color: var(--color-primary);
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  max-width: 640px;
+  /*
+    max-width on the title, not the section.
+    The section is full-width. The title constrains itself.
+    On narrow screens it wraps naturally. On wide screens
+    it won't stretch into an awkward single long line.
+  */
+}
+
+.bottom-cta-subtitle {
+  color: var(--color-text-muted);
+  font-size: 1.125rem;
+  line-height: 1.6;
+  max-width: 480px;
+}
+
+
+/* ============================================================
+  9. FOOTER
+  ============================================================ */
+
+.site-footer {
+  border-top: 1px solid var(--color-border);
+  padding: var(--space-6) var(--space-5);
+}
+
+.footer-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.footer-note {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  opacity: 0.6;
+}
+
+.footer-links {
+  display: flex;
+  gap: var(--space-5);
+}
+
+.footer-links a {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: var(--color-primary);
+}
+
+
+/* ============================================================
+  10. ANIMATIONS
+  ============================================================
+  
+  @keyframes defines a reusable animation sequence.
+  NAME { from { ... } to { ... } }
+  
+  from = the START state of the animation
+  to   = the END state of the animation
+  
+  We've referenced "fadeUp" in the HTML element styles above.
+  The browser plays from → to over the given duration.
+  ============================================================ */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    /*
+      Starting state:
+      opacity: 0 = completely invisible
+      translateY(24px) = shifted 24px DOWN from its final position
+    */
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    /*
+      Ending state:
+      opacity: 1 = fully visible
+      translateY(0) = in its normal position
+    */
+  }
+  /*
+    Combined effect: element rises up from below while fading in.
+    This is the most common and elegant entrance animation in modern UI.
+    The staggered delays (0.1s, 0.25s, 0.45s, 0.6s) on each hero child
+    mean they play one after another, guiding the eye naturally.
+  */
+}
+
+
+/* ============================================================
+  11. RESPONSIVE DESIGN (Media Queries)
+  ============================================================
+  
+  WHAT ARE MEDIA QUERIES?
+  Rules that apply ONLY when certain conditions are true.
+  Most commonly: when the screen is smaller than X pixels.
+  
+  SYNTAX:
+  @media (max-width: 768px) {
+    .element { ... }   ← overrides previous styles at this screen size
+  }
+  
+  max-width: 768px = "when screen is 768px or SMALLER"
+  (768px is a common tablet breakpoint)
+  
+  MOBILE-FIRST vs DESKTOP-FIRST:
+  Our approach here is DESKTOP-FIRST:
+  - Default styles = desktop layout
+  - Media queries OVERRIDE for smaller screens
+  
+  Mobile-first would be the opposite (but both work).
+  ============================================================ */
+
+@media (max-width: 768px) {
+
+  /* Nav: hide the CTA button on small screens — not enough space */
+  .nav-cta-btn {
+    display: none;
+    /*
+      display: none removes the element completely.
+      It takes up no space and is invisible.
+      (vs visibility: hidden which hides but keeps the space)
+    */
+  }
+
+  /* Cards: switch from 3 columns to 1 column on mobile */
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* PYQ teaser: stack left and right panels vertically on mobile */
+  .pyq-teaser {
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  /* Right panel: full width on mobile (was fixed 380px) */
+  .pyq-teaser-right {
+    width: 100%;
+  }
+
+  /* Subject pills: each pill takes full row on very narrow screens */
+  .pyq-subject-pill {
+    flex: 1 1 100%;
+  }
+
+  /* Footer: center everything on small screens */
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Very small phones */
+
+  /* Reduce hero padding on tiny screens */
+  .hero-section {
+    padding-top: 100px;
+    padding-bottom: var(--space-7);
+  }
+
+  /* Reduce section padding */
+  .features-section,
+  .pyq-section {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+}
