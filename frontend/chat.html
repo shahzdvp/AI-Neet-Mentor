@@ -390,6 +390,268 @@
       font-weight: 500;
     }
 
+    /* ── Follow-up question chips ── */
+    .followup-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
+      padding-left: 44px; /* align with bubble, past avatar */
+    }
+    .followup-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(0, 52, 111, 0.18);
+      background: var(--color-white);
+      color: var(--color-primary);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: background-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: var(--shadow-card);
+    }
+    .followup-chip:hover {
+      background-color: rgba(0, 52, 111, 0.06);
+      box-shadow: var(--shadow-card-hover);
+    }
+    .followup-chip .material-symbols-outlined {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+    }
+        /* ── Quick Check chip ── */
+    .quickcheck-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(0, 106, 106, 0.3);
+      background: rgba(0, 106, 106, 0.06);
+      color: var(--color-secondary);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: background-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: var(--shadow-card);
+    }
+    .quickcheck-chip:hover {
+      background-color: rgba(0, 106, 106, 0.12);
+      box-shadow: var(--shadow-card-hover);
+    }
+    .quickcheck-chip .material-symbols-outlined {
+      font-size: 0.875rem;
+    }
+
+    /* ── MCQ Card ── */
+    .mcq-card {
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+      padding: var(--space-5);
+      max-width: 680px;
+      animation: fadeUp 0.3s ease both;
+    }
+    .mcq-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-4);
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .mcq-header-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 0.9375rem;
+      color: var(--color-primary);
+    }
+    .mcq-progress {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      font-weight: 600;
+      background: var(--color-surface-card);
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+    }
+    .mcq-question-text {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      line-height: 1.6;
+      margin-bottom: var(--space-4);
+    }
+    .mcq-options {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      margin-bottom: var(--space-4);
+    }
+    .mcq-option {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--color-border);
+      background: var(--color-surface);
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-text-primary);
+      transition: border-color 0.2s, background-color 0.2s;
+      text-align: left;
+      width: 100%;
+    }
+    .mcq-option:hover:not(:disabled) {
+      border-color: rgba(0, 52, 111, 0.3);
+      background: rgba(0, 52, 111, 0.04);
+    }
+    .mcq-option.correct {
+      border-color: #16a34a;
+      background: rgba(22, 163, 74, 0.08);
+      color: #15803d;
+      font-weight: 600;
+    }
+    .mcq-option.wrong {
+      border-color: #dc2626;
+      background: rgba(220, 38, 38, 0.08);
+      color: #b91c1c;
+    }
+    .mcq-option:disabled { cursor: default; }
+    .mcq-option-label {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--color-surface-card);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      color: var(--color-primary);
+    }
+    .mcq-option.correct .mcq-option-label {
+      background: #16a34a;
+      color: white;
+    }
+    .mcq-option.wrong .mcq-option-label {
+      background: #dc2626;
+      color: white;
+    }
+    .mcq-explanation {
+      padding: var(--space-3) var(--space-4);
+      background: rgba(0, 52, 111, 0.05);
+      border-left: 3px solid var(--color-primary);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      font-size: 0.8125rem;
+      color: var(--color-text-primary);
+      line-height: 1.6;
+      margin-bottom: var(--space-4);
+      display: none;
+    }
+    .mcq-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: var(--space-2);
+    }
+    .mcq-feedback-text {
+      font-size: 0.875rem;
+      font-weight: 700;
+    }
+    .mcq-next-btn {
+      display: none;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 8px 18px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+      color: #fff;
+      font-size: 0.8125rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .mcq-next-btn:hover {
+      box-shadow: var(--shadow-btn-hover);
+      transform: scale(1.03);
+    }
+
+    /* ── Score card ── */
+    .mcq-score-card {
+      text-align: center;
+      padding: var(--space-6) var(--space-4);
+    }
+    .mcq-score-emoji {
+      font-size: 2.5rem;
+      margin-bottom: var(--space-2);
+    }
+    .mcq-score-number {
+      font-family: var(--font-headline);
+      font-size: 2.75rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    .mcq-score-label {
+      font-size: 0.9375rem;
+      color: var(--color-text-muted);
+      margin-top: var(--space-2);
+      margin-bottom: var(--space-5);
+    }
+    .mcq-score-actions {
+      display: flex;
+      gap: var(--space-3);
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .mcq-fulltest-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 10px 22px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+      color: #fff;
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--shadow-btn);
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .mcq-fulltest-btn:hover {
+      box-shadow: var(--shadow-btn-hover);
+      transform: scale(1.02);
+    }
+    .mcq-retry-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: 10px 22px;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid rgba(0,52,111,0.2);
+      background: transparent;
+      color: var(--color-primary);
+      font-size: 0.875rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .mcq-retry-btn:hover {
+      background: rgba(0,52,111,0.05);
+    }
+
+
     /* ── Mock Test card above chat ── */
 
 
@@ -670,10 +932,395 @@
   }
 
   /* ── CORE: Send message to Flask backend ──────────────────────────────── */
+  /* ── Mock Test Intent Detection ─────────────────────────────────────── */
+  const MOCK_INTENT_PATTERNS = [
+    /generate\s+(a\s+)?mock\s+test/i,
+    /create\s+(a\s+)?mock\s+test/i,
+    /give\s+(me\s+)?(a\s+)?mock\s+test/i,
+    /make\s+(a\s+)?mock\s+test/i,
+    /mock\s+test\s+on/i,
+    /quiz\s+(me\s+)?on/i,
+    /test\s+(me\s+)?on/i,
+    /practice\s+(test|questions)\s+on/i,
+    /\d+\s+questions?\s+on/i,
+    /start\s+(a\s+)?(mock\s+)?test/i,
+  ];
+
+  function detectMockIntent(text) {
+    return MOCK_INTENT_PATTERNS.some(p => p.test(text));
+  }
+
+  function extractTopicFromIntent(text) {
+    // Try to extract topic after "on" or "about"
+    const match = text.match(/(?:on|about|for|of)\s+(.+?)(?:\s*\?|$)/i);
+    return match ? match[1].trim() : '';
+  }
+
+  function extractCountFromIntent(text) {
+    const match = text.match(/(\d+)\s+questions?/i);
+    return match ? parseInt(match[1], 10) : null;
+  }
+
+  function openMockTestConfig(topic = '', subject = '', count = null) {
+    const params = new URLSearchParams();
+    if (topic)   params.set('topic', topic);
+    if (subject) params.set('subject', subject);
+    if (count)   params.set('count', Math.min(50, Math.max(5, count)));
+    const url = 'mock-test.html' + (params.toString() ? '?' + params.toString() : '');
+    window.location.href = url;
+  }
+
+  /* ── Generate follow-up questions after AI response ─────────────────────
+   Sends a lightweight second API call asking the LLM to suggest
+   3 follow-up questions based on the answer just given.
+   Renders them as clickable chips below the last AI bubble.
+─────────────────────────────────────────────────────────────────────── */
+  async function generateFollowUps(originalQuestion, aiAnswer, sources) {
+
+      // Build NCERT scope string from the actual retrieved sources
+      const ncertScope = sources
+        .filter(s => s.chapter && s.chapter !== 'NCERT')
+        .map(s => `${s.subject} Class ${s.class} — Chapter ${s.chapter_no || ''}: ${s.chapter}`)
+        .filter((v, i, arr) => arr.indexOf(v) === i)  // deduplicate
+        .join('\n');
+
+      try {
+        const prompt = `Based on this NEET study exchange, suggest exactly 3 short follow-up questions a student might ask next.
+  Return ONLY a JSON array of 3 strings. No explanation, no markdown, no numbering.
+  Example format: ["What is the role of ATP synthase?", "How does the Calvin cycle differ?", "What happens during photolysis?"]
+
+  STRICT RULE: Questions must ONLY be from the NCERT chapters listed below. Do not go outside this scope.
+
+  NCERT chapters used in this answer:
+  ${ncertScope || 'General NCERT syllabus — stay within Class 11 and 12 Biology, Physics, Chemistry'}
+
+  Original question: ${originalQuestion}
+  AI answer summary: ${aiAnswer.slice(0, 400)}`;
+
+      const response = await fetch(`${API_BASE}/api/followups`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+              question: originalQuestion,
+              answer:   aiAnswer.slice(0, 300),
+          }),
+      });
+
+      const data      = await response.json();
+      const questions = data.questions;
+      if (!Array.isArray(questions) || questions.length === 0) return;
+
+      // skip the regex parsing entirely — already clean
+
+      // Render chips below the last AI bubble
+      const inner = document.getElementById('messagesInner');
+      const chipRow = document.createElement('div');
+      chipRow.className = 'followup-row';
+
+      questions.slice(0, 3).forEach(q => {
+        const chip = document.createElement('button');
+        chip.className = 'followup-chip';
+        chip.innerHTML = `<span class="material-symbols-outlined">arrow_forward</span>${q}`;
+        chip.onclick = () => {
+          chipRow.remove();                         // remove chips once one is picked
+          document.getElementById('chatInput').value = q;
+          sendMessage();                            // send it immediately
+        };
+        chipRow.appendChild(chip);
+      });
+
+  // Add ⚡ Quick Check chip alongside follow-up chips
+        const quickChip     = document.createElement('button');
+        quickChip.className = 'quickcheck-chip';
+        quickChip.innerHTML = '<span class="material-symbols-outlined">bolt</span> Quick Check — 5 Qs';
+        quickChip.onclick   = () => startQuickCheck(originalQuestion, currentSubject, chipRow);
+        chipRow.appendChild(quickChip);
+
+        inner.appendChild(chipRow);
+        scrollToBottom();
+
+    } catch (e) {
+      // Silently fail — follow-ups are a nice-to-have, not critical
+      console.warn('Follow-up generation failed:', e);
+    }
+  }
+
+  /* ================================================================
+    QUICK CHECK — Inline 5-question MCQ system
+    ================================================================ */
+
+  // Global quiz state
+  let quizState = {
+    questions: [],
+    current:   0,
+    score:     0,
+    topic:     '',
+    subject:   '',
+  };
+
+  /* ── Step 1: Called when student clicks ⚡ Quick Check chip ── */
+  async function startQuickCheck(originalQuestion, subject, chipRow) {
+
+    // Remove chip row immediately so it can't be clicked twice
+    if (chipRow) chipRow.remove();
+
+    // Clean up the topic string — strip question words, trim length
+    const cleanTopic = originalQuestion
+      .replace(/^(explain|what is|what are|describe|tell me about|how does|how do|define)\s+/i, '')
+      .replace(/\?$/, '')
+      .slice(0, 50)
+      .trim();
+
+    showTyping();
+
+    try {
+      const prompt = `Generate exactly 5 NEET-style MCQs strictly on: "${cleanTopic}" from NCERT Class 11 or 12 ${subject} syllabus.
+  Return ONLY a raw JSON array. No markdown. No explanation. No text before or after the array.
+
+  Format exactly like this:
+  [
+    {
+      "q": "Question text here?",
+      "options": ["Option A text", "Option B text", "Option C text", "Option D text"],
+      "answer": 0,
+      "explanation": "One sentence NCERT-based explanation of why the correct answer is right."
+    }
+  ]
+
+  Rules:
+  - "answer" is the 0-based index of the correct option (0=A, 1=B, 2=C, 3=D)
+  - All 4 options must be plausible — three should be common NEET distractors
+  - Every question must be traceable to a specific NCERT chapter
+  - Difficulty should match actual NEET exam pattern`;
+
+      const response = await fetch(CHAT_URL, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message:    prompt,
+          subject:    subject,
+          session_id: null,
+        }),
+      });
+
+      hideTyping();
+      if (!response.ok) return;
+
+      const data    = await response.json();
+      const raw     = data.answer || '';
+      // Strip [ACADEMIC]/[CONVERSATIONAL] tag AND markdown fences
+      const cleaned = raw
+        .replace(/^\[(ACADEMIC|CONVERSATIONAL)\]/m, '')
+        .replace(/```json|```/gi, '')
+        .trim();
+      const match   = cleaned.match(/\[[\s\S]*\]/);
+      if (!match) {
+        console.warn('Quick Check: could not parse MCQ JSON', raw);
+        return;
+      }
+
+      const questions = JSON.parse(match[0]);
+      if (!Array.isArray(questions) || questions.length === 0) return;
+
+      // Set global quiz state
+      quizState = {
+        questions,
+        current: 0,
+        score:   0,
+        topic:   cleanTopic,
+        subject: subject,
+      };
+
+      renderMCQQuestion();
+
+    } catch (e) {
+      hideTyping();
+      console.warn('Quick Check failed:', e);
+    }
+  }
+
+  /* ── Step 2: Render current question ── */
+  function renderMCQQuestion() {
+    const inner   = document.getElementById('messagesInner');
+    const q       = quizState.questions[quizState.current];
+    const total   = quizState.questions.length;
+    const current = quizState.current + 1;
+    const isLast  = current === total;
+
+    // Remove existing card if present
+    const existing = document.getElementById('mcqCard');
+    if (existing) existing.remove();
+
+    const card = document.createElement('div');
+    card.id        = 'mcqCard';
+    card.className = 'mcq-card';
+
+    card.innerHTML = `
+      <div class="mcq-header">
+        <span class="mcq-header-title">
+          <span class="material-symbols-outlined" style="font-size:1rem;vertical-align:-2px;">bolt</span>
+          Quick Check
+        </span>
+        <span class="mcq-progress">Q${current} / ${total}</span>
+      </div>
+
+      <div class="mcq-question-text">Q${current}. ${q.q}</div>
+
+      <div class="mcq-options">
+        ${q.options.map((opt, i) => `
+          <button
+            class="mcq-option"
+            onclick="selectOption(this, ${i})"
+            data-index="${i}"
+          >
+            <span class="mcq-option-label">${['A','B','C','D'][i]}</span>
+            ${opt}
+          </button>
+        `).join('')}
+      </div>
+
+      <div class="mcq-explanation" id="mcqExplanation">
+        💡 ${q.explanation}
+      </div>
+
+      <div class="mcq-nav">
+        <span class="mcq-feedback-text" id="mcqFeedback"></span>
+        <button class="mcq-next-btn" id="mcqNextBtn" onclick="nextMCQQuestion()">
+          ${isLast
+            ? 'See Results <span class="material-symbols-outlined" style="font-size:0.875rem;vertical-align:-2px;">emoji_events</span>'
+            : 'Next <span class="material-symbols-outlined" style="font-size:0.875rem;vertical-align:-2px;">arrow_forward</span>'
+          }
+        </button>
+      </div>
+    `;
+
+    inner.appendChild(card);
+    scrollToBottom();
+  }
+
+  /* ── Step 3: Handle option click ── */
+  function selectOption(btn, selectedIndex) {
+    const card       = document.getElementById('mcqCard');
+    const allOptions = card.querySelectorAll('.mcq-option');
+    const correctIdx = quizState.questions[quizState.current].answer;
+    const isCorrect  = selectedIndex === correctIdx;
+
+    // Disable all options
+    allOptions.forEach(opt => opt.disabled = true);
+
+    // Highlight correct and wrong
+    allOptions[correctIdx].classList.add('correct');
+    if (!isCorrect) btn.classList.add('wrong');
+
+    // Update score
+    if (isCorrect) quizState.score++;
+
+    // Show feedback
+    const feedback    = document.getElementById('mcqFeedback');
+    const explanation = document.getElementById('mcqExplanation');
+    const nextBtn     = document.getElementById('mcqNextBtn');
+
+    feedback.textContent = isCorrect ? '✅ Correct!' : '❌ Not quite';
+    feedback.style.color = isCorrect ? '#16a34a'     : '#dc2626';
+
+    // Show explanation and next button
+    explanation.style.display = 'block';
+    nextBtn.style.display     = 'flex';
+
+    scrollToBottom();
+  }
+
+  /* ── Step 4: Move to next question or score ── */
+  function nextMCQQuestion() {
+    quizState.current++;
+
+    if (quizState.current >= quizState.questions.length) {
+      renderScoreCard();
+    } else {
+      renderMCQQuestion();
+    }
+  }
+
+  /* ── Step 5: Show final score card ── */
+  function renderScoreCard() {
+    const card  = document.getElementById('mcqCard');
+    const score = quizState.score;
+    const total = quizState.questions.length;
+    const pct   = Math.round((score / total) * 100);
+
+    const emoji   = pct === 100 ? '🏆' : pct >= 60 ? '💪' : '📖';
+    const message = pct === 100 ? 'Perfect! You nailed it.'
+                  : pct >= 80  ? 'Really strong — almost perfect!'
+                  : pct >= 60  ? 'Good work — a little more revision needed.'
+                  :               'Keep revising — you\'ve got this.';
+
+    card.innerHTML = `
+      <div class="mcq-score-card">
+        <div class="mcq-score-emoji">${emoji}</div>
+        <div class="mcq-score-number">${score}/${total}</div>
+        <div class="mcq-score-label">${message}</div>
+        <div class="mcq-score-actions">
+          <button class="mcq-retry-btn" onclick="retryQuiz()">
+            <span class="material-symbols-outlined" style="font-size:1rem;vertical-align:-2px;">refresh</span>
+            Retry
+          </button>
+          <button class="mcq-fulltest-btn" onclick="openMockTestConfig('${quizState.topic}', '${quizState.subject}')">
+            <span class="material-symbols-outlined" style="font-size:1rem;vertical-align:-2px;">assignment_turned_in</span>
+            Mock Test on this topic
+          </button>
+        </div>
+      </div>
+    `;
+
+    scrollToBottom();
+  }
+
+  /* ── Retry: reset state and re-render Q1 ── */
+  function retryQuiz() {
+    quizState.current = 0;
+    quizState.score   = 0;
+    renderMCQQuestion();
+
+  }
+
+/* ── Parse LLM response type tag ─────────────────────────────────────────
+   LLM prefixes every response with [ACADEMIC] or [CONVERSATIONAL].
+   We read the tag, strip it, and use it to decide what UI to show.
+─────────────────────────────────────────────────────────────────────── */
+  function parseResponseType(answer) {
+    if (answer.startsWith('[ACADEMIC]')) {
+      return {
+        isAcademic:  true,
+        cleanAnswer: answer.replace('[ACADEMIC]', '').trimStart()
+      };
+    }
+    if (answer.startsWith('[CONVERSATIONAL]')) {
+      return {
+        isAcademic:  false,
+        cleanAnswer: answer.replace('[CONVERSATIONAL]', '').trimStart()
+      };
+    }
+    // LLM forgot the tag — assume academic to be safe
+    return {
+      isAcademic:  true,
+      cleanAnswer: answer
+    };
+  }
+
   async function sendMessage() {
     const input = document.getElementById('chatInput');
     const text  = input.value.trim();
     if (!text) return;
+
+    // ── Mock test intent check BEFORE sending to chat API ──
+    if (detectMockIntent(text)) {
+      const topic   = extractTopicFromIntent(text);
+      const count   = extractCountFromIntent(text);
+      const subject = currentSubject !== 'All' ? currentSubject : '';
+      openMockTestConfig(topic, subject, count);
+      return;
+    }
+
 
     // Show user's message immediately (optimistic UI)
     appendMessage(text, 'user');
@@ -724,10 +1371,10 @@
       // Save the session_id for all future messages in this tab
       if (data.session_id) sessionId = data.session_id;
 
-      // Build citation from sources array
-      let fullAnswer = data.answer;
+      const { isAcademic, cleanAnswer } = parseResponseType(data.answer);
+      let fullAnswer = cleanAnswer;
 
-      if (data.sources && data.sources.length > 0) {
+      if (isAcademic && data.sources && data.sources.length > 0)  {
         const seen = new Set();
         const citationLines = [];
 
@@ -744,14 +1391,18 @@
           }
         });
 
-        // Only append if LLM didn't already write a citation
         if (citationLines.length > 0 && !fullAnswer.includes('📖 Source:')) {
           fullAnswer += '\n\n' + citationLines.join('\n');
         }
       }
 
-      // Show the AI's answer with citation
+      // Show the AI's answer
       appendMessage(fullAnswer, 'ai');
+
+      // Only show follow-ups + Quick Check for academic questions
+      if (isAcademic) {
+        generateFollowUps(text, cleanAnswer, data.sources || []);
+      }
 
     } catch (networkError) {
       /*

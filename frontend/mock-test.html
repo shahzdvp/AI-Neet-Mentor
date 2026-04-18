@@ -1,0 +1,2016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mock Test — AI Neet Mentor</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* ═══════════════════════════════════════════════════════════════════
+       MOCK TEST — Full Page Styles
+       Academic Sanctuary design system extended for exam context.
+    ═══════════════════════════════════════════════════════════════════ */
+
+    :root {
+      --color-answered:   #006a6a;
+      --color-marked:     #7b5800;
+      --color-marked-bg:  #fff8e1;
+      --color-wrong:      #ba1a1a;
+      --color-wrong-bg:   #fff0f0;
+      --color-correct-bg: #e6f4ea;
+      --color-correct:    #1a6b3c;
+      --color-unanswered: #6b7280;
+      --timer-warning:    #ba1a1a;
+    }
+
+    /* ── Backdrop overlay ── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0, 27, 63, 0.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-5);
+      animation: backdropIn 0.25s ease;
+    }
+    @keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-backdrop.hidden { display: none; }
+
+    /* ════════════════════════════════════════
+       CONFIG MODAL
+    ════════════════════════════════════════ */
+    .config-modal {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 560px;
+      padding: var(--space-7) var(--space-6);
+      box-shadow: 0 24px 80px rgba(0, 27, 63, 0.22);
+      animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+    }
+    @keyframes modalSlideUp {
+      from { opacity: 0; transform: translateY(24px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .config-modal-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+    }
+    .config-modal-icon {
+      width: 48px; height: 48px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: var(--shadow-btn);
+    }
+    .config-modal-icon .material-symbols-outlined { color: #fff; font-size: 1.4rem; }
+    .config-modal-titles { flex: 1; }
+    .config-modal-title {
+      font-family: var(--font-headline);
+      font-size: 1.375rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+    .config-modal-subtitle {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      margin-top: 4px;
+      line-height: 1.45;
+    }
+    .modal-close-btn {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-low);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.2s;
+    }
+    .modal-close-btn:hover { background: var(--color-surface-card); }
+    .modal-close-btn .material-symbols-outlined { font-size: 1.1rem; color: var(--color-text-muted); }
+
+    /* Config form fields */
+    .config-field { margin-bottom: var(--space-5); }
+    .config-label {
+      display: block;
+      font-family: var(--font-headline);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-2);
+    }
+    .config-input {
+      width: 100%;
+      padding: 12px var(--space-4);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-low);
+      border: 2px solid transparent;
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      color: var(--color-text-primary);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .config-input:focus {
+      background: var(--color-white);
+      border-color: var(--color-primary);
+    }
+    .config-input::placeholder { color: var(--color-text-muted); }
+
+    /* Pill button groups */
+    .pill-group {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .pill-opt {
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-low);
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      transition: all 0.18s ease;
+      border: 2px solid transparent;
+    }
+    .pill-opt:hover { background: var(--color-surface-card); }
+    .pill-opt.active {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+
+    /* Count slider */
+    .count-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+    .count-display {
+      font-family: var(--font-headline);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      min-width: 52px;
+      text-align: center;
+    }
+    .count-slider {
+      flex: 1;
+      -webkit-appearance: none; /*for chrome,safari*/
+      appearance: none; /*standard property*/
+      height: 4px;
+      border-radius: 4px;
+      background: var(--color-surface-card);
+      outline: none;
+    }
+    .count-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,52,111,0.3);
+    }
+
+    /* Generate button */
+    .generate-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+      color: #fff;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-headline);
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      box-shadow: var(--shadow-btn);
+      transition: box-shadow 0.25s ease, transform 0.2s ease;
+      margin-top: var(--space-5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+    }
+    .generate-btn:hover:not(:disabled) {
+      box-shadow: var(--shadow-btn-hover);
+      transform: translateY(-1px);
+    }
+    .generate-btn:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+    /* Loading state within modal */
+    .generating-state {
+      text-align: center;
+      padding: var(--space-7) var(--space-5);
+    }
+    .generating-spinner {
+      width: 48px; height: 48px;
+      border: 3px solid var(--color-surface-card);
+      border-top-color: var(--color-primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto var(--space-4);
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .generating-title {
+      font-family: var(--font-headline);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: var(--space-2);
+    }
+    .generating-subtitle {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      line-height: 1.5;
+    }
+    .generating-progress-bar {
+      height: 3px;
+      background: var(--color-surface-card);
+      border-radius: 3px;
+      margin-top: var(--space-5);
+      overflow: hidden;
+    }
+    .generating-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00346f, #006a6a);
+      border-radius: 3px;
+      animation: progressFill 18s ease-out forwards;
+    }
+    @keyframes progressFill { from { width: 0%; } to { width: 92%; } }
+
+    /* ════════════════════════════════════════
+       TEST INTERFACE (full screen)
+    ════════════════════════════════════════ */
+    .test-shell {
+      position: fixed; inset: 0;
+      background: var(--color-surface);
+      z-index: 800;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .test-shell.hidden { display: none; }
+
+    /* Test header */
+    .test-header {
+      background: rgba(248,249,251,0.96);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--color-border);
+      padding: 0 var(--space-5);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .test-header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .test-logo-text {
+      font-family: var(--font-headline);
+      font-size: 0.9375rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      letter-spacing: -0.02em;
+    }
+    .test-topic-badge {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      background: var(--color-surface-card);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+    }
+    .test-header-center {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .timer-display {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-headline);
+      font-size: 1.375rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      letter-spacing: -0.03em;
+    }
+    .timer-display.warning { color: var(--timer-warning); }
+    .timer-icon { font-size: 1rem; color: var(--color-text-muted); }
+    .test-header-right {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .test-ctrl-btn {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-low);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.18s;
+    }
+    .test-ctrl-btn:hover { background: var(--color-surface-card); }
+    .test-ctrl-btn .material-symbols-outlined { font-size: 1.1rem; color: var(--color-text-muted); }
+
+    /* Test body — two column */
+    .test-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 0;
+      overflow: hidden;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: var(--space-5);
+      gap: var(--space-5);
+    }
+
+    /* Question panel */
+    .question-panel {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      overflow-y: auto;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+    }
+    .question-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-5);
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+    .q-counter {
+      font-family: var(--font-headline);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      background: var(--color-surface-low);
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+    }
+    .q-tags {
+      display: flex;
+      gap: var(--space-2);
+      align-items: center;
+    }
+    .q-subject-tag {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+    }
+    .q-subject-tag.bio  { background: #e6f4ea; color: #1a6b3c; }
+    .q-subject-tag.phy  { background: #e8eaf6; color: #283593; }
+    .q-subject-tag.che  { background: #fff3e0; color: #e65100; }
+    .q-marks-tag {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-card);
+      color: var(--color-text-muted);
+    }
+
+    .question-text {
+      font-family: var(--font-headline);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--color-text-primary);
+      line-height: 1.55;
+      margin-bottom: var(--space-6);
+      letter-spacing: -0.01em;
+    }
+
+    /* Options */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      flex: 1;
+    }
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: 14px var(--space-4);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface-low);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      border: 2px solid transparent;
+    }
+    .option-item:hover:not(.selected) {
+      background: var(--color-surface-card);
+      border-color: rgba(194,198,211,0.3);
+    }
+    .option-item.selected {
+      background: rgba(0, 52, 111, 0.06);
+      border-color: var(--color-primary);
+    }
+    .option-radio {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--color-surface-card);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.18s;
+      background: var(--color-white);
+    }
+    .option-item.selected .option-radio {
+      border-color: var(--color-primary);
+      background: var(--color-primary);
+    }
+    .option-radio-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #fff;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    .option-item.selected .option-radio-dot { opacity: 1; }
+    .option-letter {
+      font-family: var(--font-headline);
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--color-text-muted);
+      letter-spacing: 0.05em;
+      min-width: 20px;
+    }
+    .option-item.selected .option-letter { color: var(--color-primary); }
+    .option-text {
+      font-size: 0.9375rem;
+      color: var(--color-text-primary);
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    /* Nav footer */
+    .question-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: var(--space-6);
+      padding-top: var(--space-5);
+      border-top: 1px solid var(--color-border);
+    }
+    .nav-btn-ghost {
+      display: flex; align-items: center; gap: 6px;
+      font-family: var(--font-headline);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      transition: all 0.18s;
+    }
+    .nav-btn-ghost:hover { background: var(--color-surface-low); color: var(--color-text-primary); }
+    .nav-btn-ghost:disabled { opacity: 0.35; cursor: not-allowed; }
+    .nav-btn-ghost .material-symbols-outlined { font-size: 1rem; }
+
+    .mark-review-btn {
+      display: flex; align-items: center; gap: 6px;
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-marked);
+      background: var(--color-marked-bg);
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      transition: all 0.2s;
+    }
+    .mark-review-btn:hover { opacity: 0.85; }
+    .mark-review-btn.marked {
+      background: var(--color-marked);
+      color: #fff;
+    }
+    .mark-review-btn .material-symbols-outlined { font-size: 1rem; }
+
+    .clear-btn {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--color-text-muted);
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      transition: all 0.18s;
+    }
+    .clear-btn:hover { background: var(--color-surface-low); }
+
+    .next-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+      color: #fff;
+      font-family: var(--font-headline);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      padding: 10px 22px;
+      border-radius: var(--radius-pill);
+      box-shadow: var(--shadow-btn);
+      transition: all 0.2s;
+      letter-spacing: -0.01em;
+    }
+    .next-btn:hover { box-shadow: var(--shadow-btn-hover); transform: translateY(-1px); }
+    .next-btn .material-symbols-outlined { font-size: 1rem; }
+
+    /* ── Sidebar ── */
+    .sidebar-panel {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow-card);
+      overflow-y: auto;
+    }
+    .sidebar-title {
+      font-family: var(--font-headline);
+      font-size: 0.8125rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+      margin-bottom: 4px;
+    }
+    .sidebar-total {
+      font-size: 0.8125rem;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-4);
+    }
+
+    /* Subject filter tabs */
+    .sidebar-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: var(--space-4);
+      flex-wrap: wrap;
+    }
+    .sidebar-tab {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-low);
+      color: var(--color-text-muted);
+      transition: all 0.18s;
+    }
+    .sidebar-tab.active {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    /* Question number grid */
+    .q-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-bottom: var(--space-5);
+      flex: 1;
+    }
+    .q-grid-btn {
+      aspect-ratio: 1;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-headline);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      background: var(--color-surface-low);
+      transition: all 0.18s;
+      position: relative;
+    }
+    .q-grid-btn:hover { transform: scale(1.05); }
+    .q-grid-btn.current {
+      background: var(--color-primary);
+      color: #fff;
+      box-shadow: var(--shadow-btn);
+    }
+    .q-grid-btn.answered {
+      background: var(--color-answered);
+      color: #fff;
+    }
+    .q-grid-btn.marked {
+      background: var(--color-marked);
+      color: #fff;
+    }
+    .q-grid-btn.marked::after {
+      content: '';
+      position: absolute;
+      top: 3px; right: 3px;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #ffd600;
+    }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: var(--space-5);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+    .legend-dot {
+      width: 12px; height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .legend-dot.answered { background: var(--color-answered); }
+    .legend-dot.marked   { background: var(--color-marked); }
+    .legend-dot.visited  { background: var(--color-surface-card); border: 1.5px solid #c2c6d3; }
+
+    /* Submit button */
+    .submit-exam-btn {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+      color: #fff;
+      border-radius: var(--radius-lg);
+      font-family: var(--font-headline);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-btn);
+      transition: all 0.2s;
+    }
+    .submit-exam-btn:hover {
+      box-shadow: var(--shadow-btn-hover);
+      transform: translateY(-1px);
+    }
+
+    /* ════════════════════════════════════════
+       RESULTS PAGE
+    ════════════════════════════════════════ */
+    .results-shell {
+      position: fixed; inset: 0;
+      background: var(--color-surface);
+      z-index: 800;
+      overflow-y: auto;
+    }
+    .results-shell.hidden { display: none; }
+
+    .results-container {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: var(--space-7) var(--space-5);
+    }
+
+    /* Back nav */
+    .results-back {
+      display: flex; align-items: center; gap: 6px;
+      font-family: var(--font-headline);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      margin-bottom: var(--space-6);
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      display: inline-flex;
+      transition: background 0.18s;
+    }
+    .results-back:hover { background: var(--color-surface-card); }
+    .results-back .material-symbols-outlined { font-size: 1rem; }
+
+    /* Score hero */
+    .score-hero {
+      background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+      border-radius: var(--radius-xl);
+      padding: var(--space-7) var(--space-6);
+      color: #fff;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--space-5);
+      align-items: center;
+      margin-bottom: var(--space-5);
+      position: relative;
+      overflow: hidden;
+    }
+    .score-hero::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .score-topic {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.65;
+      margin-bottom: var(--space-2);
+    }
+    .score-headline {
+      font-family: var(--font-headline);
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin-bottom: var(--space-2);
+    }
+    .score-meta {
+      font-size: 0.9rem;
+      opacity: 0.75;
+    }
+    .score-circle {
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      border: 3px solid rgba(255,255,255,0.3);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .score-pct {
+      font-family: var(--font-headline);
+      font-size: 1.75rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .score-pct-label {
+      font-size: 0.6875rem;
+      opacity: 0.65;
+      letter-spacing: 0.04em;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+    .stat-card {
+      background: var(--color-white);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4) var(--space-4);
+      box-shadow: var(--shadow-card);
+      text-align: center;
+    }
+    .stat-number {
+      font-family: var(--font-headline);
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+    .stat-number.correct  { color: var(--color-correct); }
+    .stat-number.wrong    { color: var(--color-wrong); }
+    .stat-number.skipped  { color: var(--color-unanswered); }
+    .stat-number.marked   { color: var(--color-marked); }
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Subject breakdown */
+    .breakdown-section {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      padding: var(--space-5) var(--space-6);
+      box-shadow: var(--shadow-card);
+      margin-bottom: var(--space-5);
+    }
+    .section-title {
+      font-family: var(--font-headline);
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--color-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: var(--space-4);
+    }
+    .breakdown-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      margin-bottom: var(--space-3);
+    }
+    .breakdown-label {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      min-width: 80px;
+    }
+    .breakdown-bar-wrap {
+      flex: 1;
+      height: 8px;
+      background: var(--color-surface-low);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .breakdown-bar-fill {
+      height: 100%;
+      border-radius: 8px;
+      transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .breakdown-bar-fill.bio { background: linear-gradient(90deg, #006a6a, #00897b); }
+    .breakdown-bar-fill.phy { background: linear-gradient(90deg, #283593, #3949ab); }
+    .breakdown-bar-fill.che { background: linear-gradient(90deg, #e65100, #ef6c00); }
+    .breakdown-score {
+      font-family: var(--font-headline);
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      min-width: 60px;
+      text-align: right;
+    }
+
+    /* Review questions */
+    .review-section {
+      margin-bottom: var(--space-5);
+    }
+    .review-section-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-4);
+    }
+    .review-section-title {
+      font-family: var(--font-headline);
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--color-text-primary);
+      letter-spacing: -0.01em;
+    }
+    .review-badge {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+    }
+    .review-badge.wrong  { background: var(--color-wrong-bg); color: var(--color-wrong); }
+    .review-badge.marked { background: var(--color-marked-bg); color: var(--color-marked); }
+
+    /* Review question card */
+    .review-card {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      margin-bottom: var(--space-4);
+    }
+    .review-card-header {
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-3);
+    }
+    .review-q-num {
+      font-family: var(--font-headline);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+    }
+    .review-q-status {
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+    }
+    .review-q-status.wrong   { background: var(--color-wrong-bg); color: var(--color-wrong); }
+    .review-q-status.marked  { background: var(--color-marked-bg); color: var(--color-marked); }
+    .review-q-status.correct { background: var(--color-correct-bg); color: var(--color-correct); }
+    .review-q-text {
+      padding: 0 var(--space-5) var(--space-4);
+      font-family: var(--font-headline);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--color-text-primary);
+      line-height: 1.5;
+    }
+
+    /* Review options */
+    .review-options {
+      padding: 0 var(--space-5) var(--space-4);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .review-option {
+      padding: 10px var(--space-4);
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      background: var(--color-surface-low);
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+    .review-option.correct-ans {
+      background: var(--color-correct-bg);
+      color: var(--color-correct);
+      font-weight: 600;
+    }
+    .review-option.student-wrong {
+      background: var(--color-wrong-bg);
+      color: var(--color-wrong);
+    }
+    .review-option-icon { font-size: 0.9rem; }
+
+    /* AI explanation block */
+    .ai-explanation {
+      margin: 0 var(--space-5) var(--space-5);
+      background: var(--color-surface-low);
+      border-radius: var(--radius-lg);
+      padding: var(--space-4);
+      border-left: 3px solid var(--color-primary);
+    }
+    .ai-explanation-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--color-primary);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-3);
+    }
+    .ai-explanation-header .material-symbols-outlined { font-size: 0.9rem; }
+    .ai-explanation-text {
+      font-size: 0.9rem;
+      color: var(--color-text-primary);
+      line-height: 1.65;
+    }
+    .ai-explanation-loading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+    }
+    .ai-explanation-loading-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      animation: dotPulse 1.4s ease-in-out infinite;
+    }
+    .ai-explanation-loading-dot:nth-child(2) { animation-delay: 0.2s; }
+    .ai-explanation-loading-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes dotPulse {
+      0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+      40% { opacity: 1; transform: scale(1); }
+    }
+
+    /* Retake CTA */
+    .retake-bar {
+      display: flex;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+    .retake-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+      color: #fff;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-headline);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      padding: 12px 24px;
+      box-shadow: var(--shadow-btn);
+      transition: all 0.2s;
+    }
+    .retake-btn:hover { box-shadow: var(--shadow-btn-hover); transform: translateY(-1px); }
+    .back-chat-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--color-white);
+      color: var(--color-primary);
+      border-radius: var(--radius-pill);
+      font-family: var(--font-headline);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      padding: 12px 24px;
+      box-shadow: var(--shadow-card);
+      border: 1.5px solid var(--color-border);
+      transition: all 0.2s;
+    }
+    .back-chat-btn:hover { box-shadow: var(--shadow-card-hover); }
+    .back-chat-btn .material-symbols-outlined,
+    .retake-btn .material-symbols-outlined { font-size: 1rem; }
+
+    /* Submit confirm modal */
+    .confirm-modal {
+      background: var(--color-white);
+      border-radius: var(--radius-xl);
+      padding: var(--space-6);
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 24px 80px rgba(0,27,63,0.22);
+      animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      text-align: center;
+    }
+    .confirm-icon {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: rgba(0,52,111,0.08);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto var(--space-4);
+    }
+    .confirm-icon .material-symbols-outlined { font-size: 1.5rem; color: var(--color-primary); }
+    .confirm-title {
+      font-family: var(--font-headline);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--color-text-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: var(--space-2);
+    }
+    .confirm-body {
+      font-size: 0.9rem;
+      color: var(--color-text-muted);
+      line-height: 1.55;
+      margin-bottom: var(--space-5);
+    }
+    .confirm-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+    }
+    .confirm-stat {
+      background: var(--color-surface-low);
+      border-radius: var(--radius-md);
+      padding: var(--space-3);
+    }
+    .confirm-stat-num {
+      font-family: var(--font-headline);
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--color-text-primary);
+    }
+    .confirm-stat-lbl {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+    .confirm-actions {
+      display: flex;
+      gap: var(--space-3);
+    }
+    .confirm-cancel {
+      flex: 1;
+      padding: 12px;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-low);
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 0.9375rem;
+      color: var(--color-text-muted);
+      transition: background 0.18s;
+    }
+    .confirm-cancel:hover { background: var(--color-surface-card); }
+    .confirm-submit {
+      flex: 1.5;
+      padding: 12px;
+      border-radius: var(--radius-pill);
+      background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 0.9375rem;
+      color: #fff;
+      box-shadow: var(--shadow-btn);
+      transition: all 0.18s;
+    }
+    .confirm-submit:hover { box-shadow: var(--shadow-btn-hover); }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .test-body { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+      .sidebar-panel { max-height: 220px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .score-hero { grid-template-columns: 1fr; }
+      .score-circle { display: none; }
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .fade-up { animation: fadeUp 0.35s ease both; }
+  </style>
+</head>
+
+<body>
+
+<!-- ══════════════════════════════════════════════════════
+     CONFIG MODAL
+══════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="configBackdrop">
+  <div class="config-modal" id="configModal">
+
+    <!-- Config Form -->
+    <div id="configForm">
+      <div class="config-modal-header">
+        <div class="config-modal-icon">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">assignment_turned_in</span>
+        </div>
+        <div class="config-modal-titles">
+          <div class="config-modal-title">Generate Mock Test</div>
+          <div class="config-modal-subtitle">Customise your practice session. The AI will generate NCERT-grounded MCQs.</div>
+        </div>
+        <button class="modal-close-btn" onclick="closeConfigModal()" aria-label="Close">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <!-- Topic -->
+      <div class="config-field">
+        <label class="config-label" for="topicInput">Topic / Chapter</label>
+        <input type="text" id="topicInput" class="config-input"
+               placeholder="e.g. Cell Cycle and Division, or leave blank for Full NEET"
+               value="" />
+      </div>
+
+      <!-- Subject -->
+      <div class="config-field">
+        <label class="config-label">Subject</label>
+        <div class="pill-group" id="subjectGroup">
+          <button class="pill-opt" data-value="Biology"   onclick="setPill('subjectGroup', this)">Biology</button>
+          <button class="pill-opt" data-value="Physics"   onclick="setPill('subjectGroup', this)">Physics</button>
+          <button class="pill-opt" data-value="Chemistry" onclick="setPill('subjectGroup', this)">Chemistry</button>
+          <button class="pill-opt active" data-value="Mixed"     onclick="setPill('subjectGroup', this)">Mixed</button>
+        </div>
+      </div>
+
+      <!-- Difficulty -->
+      <div class="config-field">
+        <label class="config-label">Difficulty</label>
+        <div class="pill-group" id="diffGroup">
+          <button class="pill-opt" data-value="Easy"   onclick="setPill('diffGroup', this)">Easy</button>
+          <button class="pill-opt active" data-value="Medium" onclick="setPill('diffGroup', this)">Medium</button>
+          <button class="pill-opt" data-value="Hard"   onclick="setPill('diffGroup', this)">Hard</button>
+          <button class="pill-opt" data-value="Mixed"  onclick="setPill('diffGroup', this)">Mixed</button>
+        </div>
+      </div>
+
+      <!-- Question count -->
+      <div class="config-field">
+        <label class="config-label">Number of Questions</label>
+        <div class="count-row">
+          <input type="range" class="count-slider" id="countSlider"
+                 min="5" max="180" step="5" value="10"
+                 oninput="updateCount(this.value)" />
+          <div class="count-display" id="countDisplay">10</div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;">
+          <span style="font-size:0.75rem;color:var(--color-text-muted);">5 questions</span>
+          <span style="font-size:0.75rem;color:var(--color-text-muted);">180 (Full NEET)</span>
+        </div>
+        <!-- Quick presets -->
+        <div class="pill-group" style="margin-top:var(--space-3);">
+          <button class="pill-opt" onclick="setCountPreset(10)">10 Q</button>
+          <button class="pill-opt" onclick="setCountPreset(20)">20 Q</button>
+          <button class="pill-opt" onclick="setCountPreset(45)">45 Q</button>
+          <button class="pill-opt" onclick="setCountPreset(90)">90 Q</button>
+          <button class="pill-opt" onclick="setCountPreset(180)" style="font-weight:700;">180 — Full NEET</button>
+        </div>
+      </div>
+
+      <button class="generate-btn" id="generateBtn" onclick="startGeneration()">
+        <span class="material-symbols-outlined" style="font-size:1.1rem;font-variation-settings:'FILL' 1;">auto_awesome</span>
+        Generate Test
+      </button>
+    </div>
+
+    <!-- Generating state (hidden initially) -->
+    <div id="generatingState" class="generating-state" style="display:none;">
+      <div class="generating-spinner"></div>
+      <div class="generating-title" id="generatingTitle">Crafting your questions…</div>
+      <div class="generating-subtitle" id="generatingSubtitle">The AI is generating NCERT-grounded MCQs.<br>This takes about 10–20 seconds.</div>
+      <div class="generating-progress-bar">
+        <div class="generating-progress-fill" id="genProgressFill"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     TEST INTERFACE
+══════════════════════════════════════════════════════ -->
+<div class="test-shell hidden" id="testShell">
+
+  <!-- Header -->
+  <header class="test-header">
+    <div class="test-header-left">
+      <span class="test-logo-text">NEET Mock Test</span>
+      <span class="test-topic-badge" id="testTopicBadge">LOADING…</span>
+    </div>
+    <div class="test-header-center">
+      <span class="material-symbols-outlined timer-icon" style="font-variation-settings:'FILL' 1;">timer</span>
+      <div class="timer-display" id="timerDisplay">--:--:--</div>
+    </div>
+    <div class="test-header-right">
+      <button class="test-ctrl-btn" id="pauseBtn" onclick="togglePause()" title="Pause timer">
+        <span class="material-symbols-outlined" id="pauseIcon">pause</span>
+      </button>
+      <button class="test-ctrl-btn" onclick="showSubmitConfirm()" title="Submit exam">
+        <span class="material-symbols-outlined">logout</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Body -->
+  <div class="test-body">
+
+    <!-- Question panel -->
+    <div class="question-panel" id="questionPanel">
+      <div class="question-meta">
+        <span class="q-counter" id="qCounter">Question 1 of 10</span>
+        <div class="q-tags">
+          <span class="q-subject-tag bio" id="qSubjectTag">BIOLOGY</span>
+          <span class="q-marks-tag">+4 MARKS</span>
+        </div>
+      </div>
+
+      <div class="question-text" id="questionText">Loading question…</div>
+
+      <div class="options-list" id="optionsList"></div>
+
+      <div class="question-nav">
+        <button class="nav-btn-ghost" id="prevBtn" onclick="navigate(-1)" disabled>
+          <span class="material-symbols-outlined">chevron_left</span>
+          Previous
+        </button>
+
+        <div style="display:flex;align-items:center;gap:var(--space-2);">
+          <button class="mark-review-btn" id="markBtn" onclick="toggleMarkReview()">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">flag</span>
+            Mark for Review
+          </button>
+          <button class="clear-btn" onclick="clearSelection()">Clear</button>
+        </div>
+
+        <button class="next-btn" id="nextBtn" onclick="navigate(1)">
+          Next Question
+          <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar-panel" id="sidebarPanel">
+      <div class="sidebar-title">Question Index</div>
+      <div class="sidebar-total" id="sidebarTotal">— Questions Total</div>
+
+      <div class="sidebar-tabs" id="sidebarTabs">
+        <button class="sidebar-tab active" data-filter="ALL" onclick="filterSidebar(this)">All</button>
+      </div>
+
+      <div class="q-grid" id="qGrid"></div>
+
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot answered"></div> Answered</div>
+        <div class="legend-item"><div class="legend-dot marked"></div> Marked for Review</div>
+        <div class="legend-item"><div class="legend-dot visited"></div> Not Visited</div>
+      </div>
+
+      <button class="submit-exam-btn" onclick="showSubmitConfirm()">Submit Exam</button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     SUBMIT CONFIRM MODAL
+══════════════════════════════════════════════════════ -->
+<div class="modal-backdrop hidden" id="confirmBackdrop">
+  <div class="confirm-modal">
+    <div class="confirm-icon">
+      <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">assignment_turned_in</span>
+    </div>
+    <div class="confirm-title">Submit Exam?</div>
+    <div class="confirm-body">Once submitted you cannot change your answers. Review your attempt below.</div>
+    <div class="confirm-summary" id="confirmSummary"></div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" onclick="hideSubmitConfirm()">Continue</button>
+      <button class="confirm-submit" onclick="submitExam()">Submit Now</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════
+     RESULTS PAGE
+══════════════════════════════════════════════════════ -->
+<div class="results-shell hidden" id="resultsShell">
+  <div class="results-container">
+
+    <button class="results-back" onclick="goBackToChat()">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Back to Mentor
+    </button>
+
+    <!-- Score hero -->
+    <div class="score-hero" id="scoreHero">
+      <div>
+        <div class="score-topic" id="resultsTopic">MOCK TEST</div>
+        <div class="score-headline" id="resultsHeadline">Loading results…</div>
+        <div class="score-meta" id="resultsMeta"></div>
+      </div>
+      <div class="score-circle">
+        <div class="score-pct" id="scorePct">—</div>
+        <div class="score-pct-label">SCORE</div>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="stats-row" id="statsRow"></div>
+
+    <!-- Subject breakdown -->
+    <div class="breakdown-section" id="breakdownSection">
+      <div class="section-title">Subject-wise Performance</div>
+      <div id="breakdownBars"></div>
+    </div>
+
+    <!-- Review sections -->
+    <div id="reviewSections"></div>
+
+    <!-- Retake CTA -->
+    <div class="retake-bar">
+      <button class="retake-btn" onclick="retakeTest()">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">replay</span>
+        Retake Test
+      </button>
+      <button class="back-chat-btn" onclick="goBackToChat()">
+        <span class="material-symbols-outlined">chat</span>
+        Back to Mentor
+      </button>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOCK TEST — Full State Machine
+   ═══════════════════════════════════════════════════════════════════════════
+
+   STATE:
+     testData        — { test_id, topic, subject, difficulty, questions[] }
+     answers         — { qIndex: optionIndex } (null = unanswered)
+     markedReview    — Set of question indices
+     currentQ        — current question index (0-based)
+     timerSeconds    — countdown
+     timerPaused     — bool
+     sidebarFilter   — 'ALL'|'BIO'|'PHY'|'CHE'
+
+   API endpoints:
+     POST /api/mock/generate  → testData
+     POST /api/mock/explain   → { explanation }
+*/
+
+const API_BASE = (
+  window.location.protocol === 'file:' || window.location.port === '5500'
+) ? 'http://127.0.0.1:5000' : '';
+
+/* ── State ───────────────────────────────────────────────────────────────── */
+let testData     = null;
+let answers      = {};        // { 0: 2, 1: null, ... }
+let markedReview = new Set();
+let currentQ     = 0;
+let timerSeconds = 0;
+let timerInterval = null;
+let timerPaused  = false;
+let sidebarFilter = 'ALL';
+let testConfig   = {};
+
+function setCountPreset(n) {
+  const slider = document.getElementById('countSlider');
+  slider.value = n;
+  updateCount(n);
+}
+
+/* ── Keyboard navigation ─────────────────────────────────────────────────── */
+document.addEventListener('keydown', e => {
+  // Only active during test
+  if (document.getElementById('testShell').classList.contains('hidden')) return;
+  // Don't hijack if typing in an input
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); navigate(1); }
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { e.preventDefault(); navigate(-1); }
+
+  // 1–4 keys to select options
+  const optMap = { '1': 0, '2': 1, '3': 2, '4': 3 };
+  if (optMap[e.key] !== undefined) selectOption(optMap[e.key]);
+
+  // M = mark for review
+  if (e.key === 'm' || e.key === 'M') toggleMarkReview();
+});
+
+/* ── Config modal helpers ────────────────────────────────────────────────── */
+
+function getPillValue(groupId) {
+  const active = document.querySelector(`#${groupId} .pill-opt.active`);
+  return active ? active.dataset.value : null;
+}
+
+function setPill(groupId, btn) {
+  document.querySelectorAll(`#${groupId} .pill-opt`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function updateCount(val) {
+  document.getElementById('countDisplay').textContent = val;
+}
+
+function closeConfigModal() {
+  // If no test running, go back
+  if (!testData) window.location.href = 'chat.html';
+  document.getElementById('configBackdrop').classList.add('hidden');
+}
+
+/* ── Start generation ────────────────────────────────────────────────────── */
+
+async function startGeneration() {
+  const btn = document.getElementById('generateBtn');
+  if (btn.disabled) return;  // guard double-click
+  btn.disabled = true;
+  const topic      = document.getElementById('topicInput').value.trim() || 'Full NEET';
+  const subject    = getPillValue('subjectGroup') || 'Mixed';
+  const difficulty = getPillValue('diffGroup') || 'Medium';
+  const count      = parseInt(document.getElementById('countSlider').value, 10);
+
+  testConfig = { topic, subject, count, difficulty };
+
+  // Show generating state
+  document.getElementById('configForm').style.display = 'none';
+  document.getElementById('generatingState').style.display = 'block';
+
+  // Adapt message for large tests
+  const isLarge = count > 20;
+  document.getElementById('generatingTitle').textContent = isLarge
+    ? `Generating ${count} questions in batches…`
+    : 'Crafting your questions…';
+  document.getElementById('generatingSubtitle').innerHTML = isLarge
+    ? `The AI is generating NCERT-grounded MCQs.<br>Large tests take 30–90 seconds — worth the wait!`
+    : `The AI is generating NCERT-grounded MCQs.<br>This takes about 10–20 seconds.`;
+
+  try {
+    const res = await fetch(`${API_BASE}/api/mock/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic, subject, count, difficulty }),
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Generation failed');
+    }
+
+    testData = await res.json();
+    initTest();
+
+  } catch (e) {
+    // Show error in modal
+    document.getElementById('generatingState').innerHTML = `
+      <div style="text-align:center;padding:var(--space-5);">
+        <span class="material-symbols-outlined" style="font-size:2.5rem;color:var(--color-wrong);margin-bottom:var(--space-3);display:block;">error_outline</span>
+        <div style="font-family:var(--font-headline);font-weight:700;color:var(--color-text-primary);margin-bottom:var(--space-2);">Generation Failed</div>
+        <div style="font-size:0.875rem;color:var(--color-text-muted);margin-bottom:var(--space-5);">${e.message}</div>
+        <button onclick="resetConfigForm()" style="padding:10px 24px;border-radius:var(--radius-pill);background:var(--color-primary);color:#fff;font-family:var(--font-headline);font-weight:700;">Try Again</button>
+      </div>
+    `;
+  }
+}
+
+function resetConfigForm() {
+  document.getElementById('generatingState').style.display = 'none';
+  document.getElementById('configForm').style.display = 'block';
+  // Reset progress bar for next attempt
+  const fill = document.getElementById('genProgressFill');
+  if (fill) { fill.style.animation = 'none'; fill.offsetHeight; fill.style.animation = ''; }
+}
+
+/* ── Initialise test ─────────────────────────────────────────────────────── */
+
+function initTest() {
+  if (!testData || !testData.questions || testData.questions.length === 0) {
+    alert('No questions were generated. Please try again.');
+    resetConfigForm();
+    return;
+  }
+
+  // Init answer map
+  answers = {};
+  markedReview = new Set();
+  currentQ = 0;
+
+  // Calculate timer: 3 minutes per question (like NEET: 3h / 180q = 1 min each, we use 2min for <180)
+  const qCount = testData.questions.length;
+  timerSeconds = qCount >= 180 ? 10800 : qCount * 120;
+
+  // Set topic badge
+  document.getElementById('testTopicBadge').textContent =
+    (testData.topic || 'NEET').toUpperCase();
+
+  // Build sidebar tabs from subjects present
+  buildSidebarTabs();
+
+  // Build question grid
+  buildQGrid();
+
+  // Hide config, show test
+  document.getElementById('configBackdrop').classList.add('hidden');
+  document.getElementById('testShell').classList.remove('hidden');
+
+  // Render first question
+  renderQuestion(0);
+
+  // Start timer
+  startTimer();
+}
+
+/* ── Timer ───────────────────────────────────────────────────────────────── */
+
+function startTimer() {
+  clearInterval(timerInterval);
+  timerPaused = false;
+  timerInterval = setInterval(() => {
+    if (timerPaused) return;
+    timerSeconds--;
+    updateTimerDisplay();
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      submitExam();
+    }
+  }, 1000);
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const h = Math.floor(timerSeconds / 3600);
+  const m = Math.floor((timerSeconds % 3600) / 60);
+  const s = timerSeconds % 60;
+  const str = `${pad(h)}:${pad(m)}:${pad(s)}`;
+  const el = document.getElementById('timerDisplay');
+  el.textContent = str;
+  // Warning when < 5 minutes
+  el.classList.toggle('warning', timerSeconds < 300);
+}
+
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function togglePause() {
+  timerPaused = !timerPaused;
+  document.getElementById('pauseIcon').textContent = timerPaused ? 'play_arrow' : 'pause';
+}
+
+/* ── Render question ─────────────────────────────────────────────────────── */
+
+function renderQuestion(idx) {
+  currentQ = idx;
+  const q = testData.questions[idx];
+  const total = testData.questions.length;
+
+  // Meta
+  document.getElementById('qCounter').textContent = `Question ${idx + 1} of ${total}`;
+
+  const subj = (q.subject || 'Biology').toLowerCase();
+  const subTag = document.getElementById('qSubjectTag');
+  subTag.textContent = (q.subject || 'Biology').toUpperCase();
+  subTag.className = `q-subject-tag ${subj.startsWith('b') ? 'bio' : subj.startsWith('p') ? 'phy' : 'che'}`;
+
+  // Question text
+  document.getElementById('questionText').textContent = q.question;
+
+  // Options
+  const letters = ['A', 'B', 'C', 'D'];
+  const selectedIdx = answers.hasOwnProperty(idx) ? answers[idx] : null;
+  const listEl = document.getElementById('optionsList');
+  listEl.innerHTML = '';
+
+  (q.options || []).forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = `option-item${selectedIdx === i ? ' selected' : ''}`;
+    div.onclick = () => selectOption(i);
+    div.innerHTML = `
+      <div class="option-radio"><div class="option-radio-dot"></div></div>
+      <span class="option-letter">${letters[i]}.</span>
+      <span class="option-text">${opt}</span>
+    `;
+    listEl.appendChild(div);
+  });
+
+  // Mark review button
+  const markBtn = document.getElementById('markBtn');
+  if (markedReview.has(idx)) {
+    markBtn.classList.add('marked');
+    markBtn.innerHTML = `<span class="material-symbols-outlined" style="font-size:1rem;font-variation-settings:'FILL' 1;">flag</span> Marked`;
+  } else {
+    markBtn.classList.remove('marked');
+    markBtn.innerHTML = `<span class="material-symbols-outlined" style="font-size:1rem;font-variation-settings:'FILL' 1;">flag</span> Mark for Review`;
+  }
+
+  // Nav buttons
+  document.getElementById('prevBtn').disabled = idx === 0;
+  document.getElementById('nextBtn').textContent = idx === total - 1 ? '' : '';
+  document.getElementById('nextBtn').innerHTML = idx === total - 1
+    ? `Submit <span class="material-symbols-outlined">check</span>`
+    : `Next Question <span class="material-symbols-outlined">chevron_right</span>`;
+
+  if (idx === total - 1) {
+    document.getElementById('nextBtn').onclick = showSubmitConfirm;
+  } else {
+    document.getElementById('nextBtn').onclick = () => navigate(1);
+  }
+
+  // Update sidebar highlight
+  updateQGrid();
+}
+
+function selectOption(optIdx) {
+  answers[currentQ] = optIdx;
+  // Unmark from review on answer (optional UX choice — keep marked for explicit mark only)
+  renderQuestion(currentQ);
+  updateQGrid();
+}
+
+function clearSelection() {
+  delete answers[currentQ];
+  renderQuestion(currentQ);
+  updateQGrid();
+}
+
+function toggleMarkReview() {
+  if (markedReview.has(currentQ)) {
+    markedReview.delete(currentQ);
+  } else {
+    markedReview.add(currentQ);
+  }
+  renderQuestion(currentQ);
+  updateQGrid();
+}
+
+function navigate(dir) {
+  const next = currentQ + dir;
+  if (next < 0 || next >= testData.questions.length) return;
+  renderQuestion(next);
+}
+
+/* ── Sidebar ─────────────────────────────────────────────────────────────── */
+
+function buildSidebarTabs() {
+  const subjects = new Set(testData.questions.map(q => q.subject || 'Biology'));
+  const tabsEl = document.getElementById('sidebarTabs');
+  tabsEl.innerHTML = `<button class="sidebar-tab active" data-filter="ALL" onclick="filterSidebar(this)">All</button>`;
+  subjects.forEach(s => {
+    const code = s.substring(0, 3).toUpperCase();
+    tabsEl.innerHTML += `<button class="sidebar-tab" data-filter="${code}" onclick="filterSidebar(this)">${code}</button>`;
+  });
+
+  document.getElementById('sidebarTotal').textContent = `${testData.questions.length} Questions Total`;
+}
+
+function filterSidebar(btn) {
+  document.querySelectorAll('.sidebar-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  sidebarFilter = btn.dataset.filter;
+  updateQGrid();
+}
+
+function buildQGrid() {
+  const grid = document.getElementById('qGrid');
+  grid.innerHTML = '';
+  testData.questions.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'q-grid-btn';
+    btn.id = `qbtn-${i}`;
+    btn.textContent = i + 1;
+    btn.onclick = () => renderQuestion(i);
+    grid.appendChild(btn);
+  });
+}
+
+function updateQGrid() {
+  testData.questions.forEach((q, i) => {
+    const btn = document.getElementById(`qbtn-${i}`);
+    if (!btn) return;
+
+    // Filter visibility
+    const subCode = (q.subject || 'Biology').substring(0, 3).toUpperCase();
+    btn.style.display = (sidebarFilter === 'ALL' || sidebarFilter === subCode) ? '' : 'none';
+
+    // State class
+    btn.className = 'q-grid-btn';
+    if (i === currentQ) btn.classList.add('current');
+    else if (markedReview.has(i)) btn.classList.add('marked');
+    else if (answers.hasOwnProperty(i)) btn.classList.add('answered');
+  });
+}
+
+/* ── Submit confirm ──────────────────────────────────────────────────────── */
+
+function showSubmitConfirm() {
+  const total    = testData.questions.length;
+  const answered = Object.keys(answers).length;
+  const marked   = markedReview.size;
+  const skipped  = total - answered;
+
+  document.getElementById('confirmSummary').innerHTML = `
+    <div class="confirm-stat"><div class="confirm-stat-num">${answered}</div><div class="confirm-stat-lbl">Answered</div></div>
+    <div class="confirm-stat"><div class="confirm-stat-num">${skipped}</div><div class="confirm-stat-lbl">Skipped</div></div>
+    <div class="confirm-stat"><div class="confirm-stat-num">${marked}</div><div class="confirm-stat-lbl">Marked</div></div>
+  `;
+
+  document.getElementById('confirmBackdrop').classList.remove('hidden');
+}
+
+function hideSubmitConfirm() {
+  document.getElementById('confirmBackdrop').classList.add('hidden');
+}
+
+/* ── Submit & results ────────────────────────────────────────────────────── */
+
+function submitExam() {
+  clearInterval(timerInterval);
+  hideSubmitConfirm();
+  document.getElementById('testShell').classList.add('hidden');
+  buildResults();
+  document.getElementById('resultsShell').classList.remove('hidden');
+  window.scrollTo(0, 0);
+}
+
+function buildResults() {
+  const questions = testData.questions;
+  const total = questions.length;
+
+  // Scoring: +4 correct, -1 wrong, 0 unanswered
+  let score = 0, correct = 0, wrong = 0, skipped = 0;
+  const subjectStats = {};
+
+  questions.forEach((q, i) => {
+    const subj = q.subject || 'Biology';
+    if (!subjectStats[subj]) subjectStats[subj] = { correct: 0, total: 0 };
+    subjectStats[subj].total++;
+
+    if (!answers.hasOwnProperty(i)) {
+      skipped++;
+    } else if (answers[i] === q.correct_index) {
+      score += 4; correct++;
+      subjectStats[subj].correct++;
+    } else {
+      score -= 1; wrong++;
+    }
+  });
+
+  const maxScore = total * 4;
+  const pct = Math.round((score / maxScore) * 100);
+  const timeTaken = testData.questions.length * 120 - timerSeconds;
+
+  // Hero
+  document.getElementById('resultsTopic').textContent =
+    (testData.topic || 'NEET Mock Test').toUpperCase();
+  document.getElementById('resultsHeadline').textContent =
+    score >= 0
+      ? `You scored ${score} / ${maxScore}`
+      : `Score: ${score} / ${maxScore}`;
+  document.getElementById('resultsMeta').textContent =
+    `${correct} correct · ${wrong} wrong · ${skipped} skipped · ${formatTime(timeTaken)} taken`;
+  document.getElementById('scorePct').textContent =
+    `${Math.max(0, pct)}%`;
+
+  // Stats cards
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card fade-up"><div class="stat-number correct">${correct}</div><div class="stat-label">Correct</div></div>
+    <div class="stat-card fade-up" style="animation-delay:.05s"><div class="stat-number wrong">${wrong}</div><div class="stat-label">Wrong</div></div>
+    <div class="stat-card fade-up" style="animation-delay:.1s"><div class="stat-number skipped">${skipped}</div><div class="stat-label">Skipped</div></div>
+    <div class="stat-card fade-up" style="animation-delay:.15s"><div class="stat-number marked">${markedReview.size}</div><div class="stat-label">Marked</div></div>
+  `;
+
+  // Breakdown bars
+  const barsEl = document.getElementById('breakdownBars');
+  barsEl.innerHTML = '';
+  Object.entries(subjectStats).forEach(([subj, stats]) => {
+    const pctS = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+    const cls = subj.startsWith('B') ? 'bio' : subj.startsWith('P') ? 'phy' : 'che';
+    barsEl.innerHTML += `
+      <div class="breakdown-row">
+        <div class="breakdown-label">${subj}</div>
+        <div class="breakdown-bar-wrap">
+          <div class="breakdown-bar-fill ${cls}" style="width:${pctS}%"></div>
+        </div>
+        <div class="breakdown-score">${stats.correct}/${stats.total}</div>
+      </div>
+    `;
+  });
+
+  // Review sections: wrong answers + marked for review
+  const reviewEl = document.getElementById('reviewSections');
+  reviewEl.innerHTML = '';
+
+  const wrongQs   = questions.map((q, i) => ({q, i}))
+    .filter(({i}) => answers.hasOwnProperty(i) && answers[i] !== questions[i].correct_index);
+  const markedQs  = questions.map((q, i) => ({q, i}))
+    .filter(({i}) => markedReview.has(i));
+
+  if (wrongQs.length > 0) {
+    reviewEl.innerHTML += buildReviewSection('Wrong Answers', wrongQs, 'wrong');
+  }
+  if (markedQs.length > 0) {
+    reviewEl.innerHTML += buildReviewSection('Marked for Review', markedQs, 'marked');
+  }
+
+  // After DOM update, fetch AI explanations
+  setTimeout(() => {
+    [...wrongQs, ...markedQs].forEach(({q, i}) => fetchExplanation(q, i));
+  }, 300);
+}
+
+function buildReviewSection(title, items, type) {
+  const badge = `<span class="review-badge ${type}">${items.length} questions</span>`;
+  let html = `
+    <div class="review-section fade-up">
+      <div class="review-section-header">
+        <div class="review-section-title">${title}</div>
+        ${badge}
+      </div>
+  `;
+
+  items.forEach(({q, i}) => {
+    const studentIdx = answers.hasOwnProperty(i) ? answers[i] : -1;
+    const isCorrect  = studentIdx === q.correct_index;
+    const statusText = isCorrect ? 'Correct' : studentIdx === -1 ? 'Skipped' : 'Incorrect';
+    const statusCls  = isCorrect ? 'correct' : studentIdx === -1 ? 'marked' : 'wrong';
+    const letters    = ['A', 'B', 'C', 'D'];
+
+    let optionsHtml = '';
+    (q.options || []).forEach((opt, oi) => {
+      let cls = 'review-option';
+      let icon = '';
+      if (oi === q.correct_index) { cls += ' correct-ans'; icon = '✓'; }
+      else if (oi === studentIdx)  { cls += ' student-wrong'; icon = '✗'; }
+      optionsHtml += `<div class="${cls}"><span class="review-option-icon">${icon || letters[oi] + '.'}</span>${opt}</div>`;
+    });
+
+    html += `
+      <div class="review-card fade-up">
+        <div class="review-card-header">
+          <span class="review-q-num">Q${i + 1} · ${q.subject || 'Biology'} · ${q.chapter || 'NCERT'}</span>
+          <span class="review-q-status ${statusCls}">${statusText}</span>
+        </div>
+        <div class="review-q-text">${q.question}</div>
+        <div class="review-options">${optionsHtml}</div>
+        <div class="ai-explanation" id="explain-${i}">
+          <div class="ai-explanation-header">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+            AI Mentor Analysis
+          </div>
+          <div class="ai-explanation-loading">
+            <div class="ai-explanation-loading-dot"></div>
+            <div class="ai-explanation-loading-dot"></div>
+            <div class="ai-explanation-loading-dot"></div>
+            <span style="margin-left:6px;">Generating explanation…</span>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  return html;
+}
+
+async function fetchExplanation(q, i) {
+  try {
+    const res = await fetch(`${API_BASE}/api/mock/explain`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        question:      q.question,
+        options:       q.options,
+        correct_index: q.correct_index,
+        student_index: answers.hasOwnProperty(i) ? answers[i] : -1,
+        subject:       q.subject || 'Biology',
+      }),
+    });
+
+    if (!res.ok) throw new Error('Explain failed');
+    const data = await res.json();
+
+    const el = document.getElementById(`explain-${i}`);
+    if (el) {
+      el.innerHTML = `
+        <div class="ai-explanation-header">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+          AI Mentor Analysis
+        </div>
+        <div class="ai-explanation-text">${formatExplanation(data.explanation)}</div>
+      `;
+    }
+  } catch {
+    const el = document.getElementById(`explain-${i}`);
+    if (el) {
+      el.innerHTML = `
+        <div class="ai-explanation-header">
+          <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">auto_awesome</span>
+          AI Mentor Analysis
+        </div>
+        <div class="ai-explanation-text" style="color:var(--color-text-muted);">
+          Explanation unavailable. Please check the correct answer above.
+        </div>
+      `;
+    }
+  }
+}
+
+function formatExplanation(text) {
+  // Light markdown: **bold**, 🎯 tip lines
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
+}
+
+function formatTime(secs) {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m}m ${s}s`;
+}
+
+/* ── Retake & navigation ─────────────────────────────────────────────────── */
+
+function retakeTest() {
+  document.getElementById('resultsShell').classList.add('hidden');
+  // Reset and show config again
+  testData = null;
+  answers = {};
+  markedReview = new Set();
+  document.getElementById('configForm').style.display = 'block';
+  document.getElementById('generatingState').style.display = 'none';
+  document.getElementById('configBackdrop').classList.remove('hidden');
+}
+
+function goBackToChat() {
+  window.location.href = 'chat.html';
+}
+
+/* ── Auto-open from chat intent ─────────────────────────────────────────── */
+
+// If opened with query params (from chat.html intent detection)
+(function checkParams() {
+  const params = new URLSearchParams(window.location.search);
+  const topic   = params.get('topic');
+  const subject = params.get('subject');
+  const count   = params.get('count');
+
+  if (topic) document.getElementById('topicInput').value = topic;
+  if (subject) {
+    const btn = document.querySelector(`#subjectGroup [data-value="${subject}"]`);
+    if (btn) setPill('subjectGroup', btn);
+  }
+  if (count) {
+    const slider = document.getElementById('countSlider');
+    slider.value = count;
+    updateCount(count);
+  }
+})();
+</script>
+</body>
+</html>

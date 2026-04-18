@@ -29,6 +29,8 @@ from src.db.chroma_db import init_chroma
 from src.rag.embedder import init_embedder
 from src.api.chat import chat_bp
 from src.api.health import health_bp
+from src.api.mock_test import mock_bp
+from src.api.followups import followups_bp
 
 
 def create_app() -> Flask:
@@ -69,11 +71,17 @@ def create_app() -> Flask:
     # url_prefix means /api/chat, /api/health — all API routes share /api/.
     app.register_blueprint(chat_bp,   url_prefix="/api")
     app.register_blueprint(health_bp, url_prefix="/api")
+    app.register_blueprint(mock_bp,   url_prefix="/api")
+    app.register_blueprint(followups_bp, url_prefix="/api")
 
     # ── 6. Root route → serve the landing page ──────────────────────────────
     @app.route("/")
     def index():
         return app.send_static_file("index.html")
+    
+    @app.route("/mock-test")
+    def mock_test():
+        return app.send_static_file("mock-test.html")
 
     return app
 
