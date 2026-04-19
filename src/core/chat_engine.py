@@ -109,6 +109,7 @@ class ChatEngine:
                 "topic":        chunk.get("metadata", {}).get("topic", ""),
                 "weightage":    chunk.get("metadata", {}).get("weightage", ""),
                 "relevance":    chunk.get("relevance", 0),
+                "pdf_filename": chunk.get("metadata", {}).get("pdf_filename", chunk.get("metadata", {}).get("source", "")),
                 "text_preview": chunk.get("text", "")[:120] + "...",
             }
             for chunk in chunks

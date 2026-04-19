@@ -148,6 +148,98 @@
       color: var(--color-text-muted);
     }
 
+
+    /* ── PDF Side Panel ── */
+    .pdf-panel {
+      position: fixed;
+      top: 0; right: 0;
+      width: 44vw;
+      min-width: 340px;
+      max-width: 680px;
+      height: 100vh;
+      background: #fff;
+      border-left: 1px solid rgba(0,0,0,0.10);
+      box-shadow: -4px 0 24px rgba(0,0,0,0.10);
+      display: flex;
+      flex-direction: column;
+      z-index: 999;
+      transform: translateX(100%);
+      transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    }
+    .pdf-panel.pdf-panel--open { transform: translateX(0); }
+    .pdf-panel-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+      flex-shrink: 0;
+    }
+    .pdf-panel-title {
+      flex: 1;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #1a1a2e;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .pdf-panel-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #555;
+      padding: 4px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+    }
+    .pdf-panel-close:hover { background: rgba(0,0,0,0.06); }
+    .pdf-panel-iframe { flex: 1; border: none; width: 100%; }
+    /* Citation box as clickable button */
+    .source-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 6px;
+      padding: 8px 12px;
+      background: rgba(0,52,111,0.06);
+      border: none;
+      border-left: 3px solid #00346f;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.8125rem;
+      color: #00346f;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .source-chip:hover { background: rgba(0,52,111,0.13); }
+    .source-chip .chip-label { flex: 1; }
+    .source-chip .chip-open { font-size: 0.75rem; opacity: 0.5; flex-shrink: 0; transition: opacity 0.15s; }
+    .source-chip:hover .chip-open { opacity: 0.9; }
+    /* Non-clickable fallback (no PDF file yet) */
+    .source-badge {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      margin-top: 6px;
+      padding: 8px 12px;
+      background: rgba(0,52,111,0.04);
+      border-left: 3px solid rgba(0,52,111,0.3);
+      border-radius: 0 6px 6px 0;
+      font-size: 0.8125rem;
+      color: #00346f;
+    }
+    .chat-shell { transition: margin-right 0.28s cubic-bezier(0.4,0,0.2,1); }
+    .chat-shell.panel-open { margin-right: 44vw; }
+    @media (max-width: 768px) {
+      .pdf-panel { width: 100vw; min-width: unset; }
+      .chat-shell.panel-open { margin-right: 0; }
+    }
+
+
     /* ── Quick action chips ── */
     .quick-actions-grid {
       display: grid;
@@ -655,6 +747,8 @@
     /* ── Mock Test card above chat ── */
 
 
+
+
     /* ── Mobile bottom nav (hidden) ── */
     .mobile-bottom-nav { display: none; }
 
@@ -814,6 +908,17 @@
 
 </div><!-- end .chat-shell -->
 
+<div class="pdf-panel" id="pdfPanel">
+  <div class="pdf-panel-header">
+    <span class="material-symbols-outlined" style="font-size:1.1rem;font-variation-settings:'FILL' 1;color:#00346f;">menu_book</span>
+    <span class="pdf-panel-title" id="pdfPanelTitle">NCERT Source</span>
+    <button class="pdf-panel-close" onclick="closePdfPanel()">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <iframe class="pdf-panel-iframe" id="pdfPanelFrame" src="" title="NCERT PDF"></iframe>
+</div>
+
 
 <script>
   /* ==========================================================================
@@ -850,6 +955,27 @@
 
   const CHAT_URL = `${API_BASE}/api/chat`;
 
+  function openPdfPanel(filename, page, title) {
+    const panel = document.getElementById('pdfPanel');
+    const frame = document.getElementById('pdfPanelFrame');
+    const label = document.getElementById('pdfPanelTitle');
+    const shell = document.querySelector('.chat-shell');
+    const pageHash = page && page !== '—' ? `#page=${page}` : '';
+    label.textContent = title || filename;
+    frame.src = `${API_BASE}/api/pdf/${encodeURIComponent(filename)}${pageHash}`;
+    panel.classList.add('pdf-panel--open');
+    shell.classList.add('panel-open');
+  }
+
+  function closePdfPanel() {
+    const panel = document.getElementById('pdfPanel');
+    const frame = document.getElementById('pdfPanelFrame');
+    const shell = document.querySelector('.chat-shell');
+    panel.classList.remove('pdf-panel--open');
+    shell.classList.remove('panel-open');
+    setTimeout(() => { frame.src = ''; }, 300);
+  }
+
   /* ── Mode placeholders ────────────────────────────────────────────────── */
   const modePlaceholders = {
     explain: 'Ask about any NCERT topic to get a clear explanation…',
@@ -873,8 +999,6 @@
     .replace(/\*(.+?)\*/g, '<em>$1</em>')
     .replace(/`(.+?)`/g, '<code style="background:var(--color-surface-card);padding:2px 6px;border-radius:4px;font-size:0.875em;">$1</code>')
     .replace(/^#{1,3} (.+)$/gm, '<strong>$1</strong>')
-    .replace(/(📖 Source:.*)/g, '<div style="margin-top:12px;padding:8px 12px;background:rgba(0,52,111,0.06);border-left:3px solid #00346f;border-radius:0 6px 6px 0;font-size:0.8125rem;color:#00346f;">$1</div>')
-    .replace(/\n\n/g, '</p><p style="margin:8px 0">')
     .replace(/\n/g, '<br>');
   }
 
@@ -1371,33 +1495,64 @@
       // Save the session_id for all future messages in this tab
       if (data.session_id) sessionId = data.session_id;
 
-      const { isAcademic, cleanAnswer } = parseResponseType(data.answer);
-      let fullAnswer = cleanAnswer;
+    const { isAcademic, cleanAnswer } = parseResponseType(data.answer);
 
-      if (isAcademic && data.sources && data.sources.length > 0)  {
+      // Strip any 📖 Source: lines the LLM wrote — we render them as chips below
+      const answerText = cleanAnswer.replace(/\n?📖 Source:.*$/gm, '').trimEnd();
+
+      // Render the answer
+      appendMessage(answerText, 'ai');
+
+      // Render citation boxes as clickable chips below the answer
+      if (isAcademic && data.sources && data.sources.length > 0) {
         const seen = new Set();
-        const citationLines = [];
-
+        const toShow = [];
         data.sources.forEach(s => {
-          const page    = s.page_number && s.page_number !== '—' ? `, Page ${s.page_number}` : '';
-          const chNo    = s.chapter_no ? `Chapter ${s.chapter_no}: ` : '';
-          const key     = `${s.subject}-${s.chapter}-${s.page_number}`;
-
+          // Dedup by subject+chapter only — same chapter on multiple pages = one chip
+          const key = `${s.subject}-${s.chapter}`;
           if (!seen.has(key) && s.chapter && s.chapter !== 'NCERT') {
-            seen.add(key);
-            citationLines.push(
-              `📖 Source: NCERT ${s.subject} Class ${s.class} — ${chNo}${s.chapter}${page}`
-            );
+            seen.add(key); toShow.push(s);
           }
         });
 
-        if (citationLines.length > 0 && !fullAnswer.includes('📖 Source:')) {
-          fullAnswer += '\n\n' + citationLines.join('\n');
+        if (toShow.length > 0) {
+          const inner      = document.getElementById('messagesInner');
+          const allRows    = inner.querySelectorAll('.message-row:not(.message-row--user)');
+          const lastBubble = allRows[allRows.length - 1]?.querySelector('.message-bubble');
+
+          if (lastBubble) {
+            const wrap = document.createElement('div');
+            wrap.style.cssText = 'display:flex;flex-direction:column;gap:0;margin-top:10px;';
+
+            toShow.forEach(s => {
+              const page      = s.page_number && s.page_number !== '—' ? s.page_number : '';
+              const chNo      = s.chapter_no ? `Chapter ${s.chapter_no}: ` : '';
+              const pageLabel = page ? `, Page ${page}` : '';
+              const label     = `📖 Source: NCERT ${s.subject} Class ${s.class} — ${chNo}${s.chapter}${pageLabel}`;
+              const hasPdf    = s.pdf_filename && s.pdf_filename !== 'demo' && s.pdf_filename.endsWith('.pdf');
+
+              if (hasPdf) {
+                const chip = document.createElement('button');
+                chip.className = 'source-chip';
+                chip.title = `View in NCERT PDF${page ? ' · Page ' + page : ''}`;
+                chip.innerHTML = `<span class="chip-label">${label}</span><span class="material-symbols-outlined chip-open">open_in_new</span>`;
+                chip.onclick = () => openPdfPanel(
+                  s.pdf_filename, page || '1',
+                  `NCERT ${s.subject} Class ${s.class} — ${chNo}${s.chapter}`
+                );
+                wrap.appendChild(chip);
+              } else {
+                const badge = document.createElement('div');
+                badge.className = 'source-badge';
+                badge.textContent = label;
+                wrap.appendChild(badge);
+              }
+            });
+
+            lastBubble.appendChild(wrap);
+          }
         }
       }
-
-      // Show the AI's answer
-      appendMessage(fullAnswer, 'ai');
 
       // Only show follow-ups + Quick Check for academic questions
       if (isAcademic) {

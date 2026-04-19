@@ -20,7 +20,8 @@ HOW IT WORKS:
 """
 
 import os
-from flask import Flask
+from flask import Flask, send_file, abort
+from werkzeug.utils import safe_join
 from flask_cors import CORS
 
 from config import get_config
@@ -82,6 +83,17 @@ def create_app() -> Flask:
     @app.route("/mock-test")
     def mock_test():
         return app.send_static_file("mock-test.html")
+
+    @app.route("/api/pdf/<path:filename>")
+    def serve_pdf(filename):
+        pdf_dir = os.path.abspath("data/ncert_chunks")
+        try:
+            safe_path = safe_join(pdf_dir, filename)
+        except Exception:
+            abort(400)
+        if not os.path.isfile(safe_path):
+            abort(404)
+        return send_file(safe_path, mimetype="application/pdf")
 
     return app
 

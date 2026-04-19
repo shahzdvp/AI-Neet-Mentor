@@ -79,7 +79,8 @@ FILE_METADATA = {
         "chapter_no": "01",
         "topic":      "Mole Concept, Atomic Mass, Molecular Mass, Stoichiometry",
         "weightage":  "high",
-        "source":     "Chemistry_11_01_Some_Basic_Concepts_of_Chemistry.pdf"
+        "source":       "Chemistry_11_01_Some_Basic_Concepts_of_Chemistry.pdf",
+        "pdf_filename": "Chemistry_11_01_Some_Basic_Concepts_of_Chemistry.pdf"
     },
     "Biology_11_01_The_Living_World.pdf": {
         "subject":    "Biology",
@@ -88,7 +89,8 @@ FILE_METADATA = {
         "chapter_no": "01",
         "topic":      "Taxonomy, Biodiversity, Nomenclature, Classification",
         "weightage":  "medium",
-        "source":     "Biology_11_01_The_Living_World.pdf"
+        "source":     "Biology_11_01_The_Living_World.pdf",
+        "pdf_filename": "Biology_11_01_The_Living_World.pdf"
     },
     "Physics_11_01_Physical_World.pdf": {
         "subject":    "Physics",
@@ -97,7 +99,8 @@ FILE_METADATA = {
         "chapter_no": "01",
         "topic":      "Scope of Physics, Fundamental Forces, Nature of Science",
         "weightage":  "low",
-        "source":     "Physics_11_01_Physical_World.pdf"
+        "source":     "Physics_11_01_Physical_World.pdf",
+        "pdf_filename": "Physics_11_01_Physical_World.pdf"
     },
 }
 
@@ -133,7 +136,7 @@ def parse_metadata_from_filename(filename: str) -> dict:
     cls     = parts[1] if len(parts) > 1 else ""
     chapter = " ".join(parts[2:]).replace("_", " ").title() if len(parts) > 2 else name
 
-    return {"subject": subject, "class": cls, "chapter": chapter, "source": filename}
+    return {"subject": subject, "class": cls, "chapter": chapter, "source": filename, "pdf_filename": filename}
 
 def ingest_pdf_with_pages(filepath: str, meta: dict, collection, embedder, splitter) -> int:
     """
@@ -155,6 +158,7 @@ def ingest_pdf_with_pages(filepath: str, meta: dict, collection, embedder, split
         for i, chunk in enumerate(page_chunks):
             chunk_meta = meta.copy()
             chunk_meta["page_number"] = str(page_num)
+            chunk_meta["pdf_filename"] = filename
 
             all_chunks.append(chunk)
             all_metadatas.append(chunk_meta)
