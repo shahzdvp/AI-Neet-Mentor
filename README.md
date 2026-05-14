@@ -232,7 +232,7 @@ Returns `{"status": "ok"}` — use this to verify the server is running.
 
 ### Prerequisites
 
-- Python 3.11+
+- Python 3.11
 - A free Groq API key — get one at [console.groq.com](https://console.groq.com)
 
 ### 1 — Clone and create a virtual environment
