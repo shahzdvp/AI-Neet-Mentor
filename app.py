@@ -105,6 +105,7 @@ if __name__ == "__main__":
     flask_app = create_app()
     flask_app.run(
         host="0.0.0.0",   # Accept connections from any network interface
-        port=5000,
+        port=int(os.getenv("PORT", 5000)),  # Render/Railway set PORT automatically
         debug=flask_app.config.get("DEBUG", True),
     )
+

@@ -1,0 +1,51 @@
+# ─────────────────────────────────────────────────────────────────
+# render.yaml — Render Blueprint (Infrastructure as Code)
+# ─────────────────────────────────────────────────────────────────
+# This file tells Render exactly how to deploy your app.
+# Push this to GitHub and Render auto-detects it.
+#
+# Docs: https://render.com/docs/blueprint-spec
+# ─────────────────────────────────────────────────────────────────
+
+services:
+  - type: web
+    name: ai-neet-mentor
+    runtime: python
+    plan: free
+
+    # ── Build ─────────────────────────────────────────────────────
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: gunicorn "app:create_app()" --bind 0.0.0.0:$PORT --workers 2 --timeout 120
+
+    # ── Environment ───────────────────────────────────────────────
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_SECRET_KEY
+        generateValue: true        # Render auto-generates a random secret
+      - key: GROQ_API_KEY
+        sync: false                # You'll set this manually in Render dashboard
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-120b
+      - key: LLM_MAX_TOKENS
+        value: "1600"
+      - key: LLM_TEMPERATURE
+        value: "0.3"
+      - key: RAG_TOP_K
+        value: "4"
+      - key: SQLITE_DB_PATH
+        value: data/academic_sanctuary.db
+      - key: CHROMA_DB_PATH
+        value: data/chroma_store
+
+    # ── Persistent Disk ───────────────────────────────────────────
+    # Free tier doesn't include persistent disk, but data/ is
+    # rebuilt on each deploy via build.sh (demo content).
+    # Upgrade to Starter ($7/mo) for a persistent disk:
+    #
+    # disk:
+    #   name: neet-data
+    #   mountPath: /opt/render/project/src/data
+    #   sizeGB: 1
