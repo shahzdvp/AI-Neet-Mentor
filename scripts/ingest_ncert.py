@@ -180,8 +180,15 @@ def ingest():
     """Main ingestion function."""
     cfg       = get_config()
     chroma    = init_chroma(cfg.CHROMA_DB_PATH)
-    embedder  = init_embedder(cfg.EMBEDDING_MODEL)
     collection = get_or_create_collection(chroma)
+
+    existing_count = collection.count()
+    if existing_count > 0 and not os.getenv("FORCE_REINGEST"):
+        logger.info("ChromaDB already contains %d chunks. Skipping ingestion.", existing_count)
+        logger.info("To force re-ingestion, set environment variable FORCE_REINGEST=1")
+        return
+
+    embedder  = init_embedder(cfg.EMBEDDING_MODEL)
 
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=CHUNK_SIZE,

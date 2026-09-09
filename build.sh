@@ -14,7 +14,12 @@ pip install -r requirements.txt
 echo "── Creating data directories ──"
 mkdir -p data/ncert_chunks
 
-echo "── Running NCERT ingestion (loads demo content if no files present) ──"
-python scripts/ingest_ncert.py
+echo "── Checking ChromaDB vector store ──"
+if [ -f "data/chroma_store/chroma.sqlite3" ]; then
+    echo "ChromaDB vector database already exists. Skipping ingestion."
+else
+    echo "Vector store not found. Running NCERT ingestion..."
+    python scripts/ingest_ncert.py
+fi
 
 echo "── Build complete ──"
