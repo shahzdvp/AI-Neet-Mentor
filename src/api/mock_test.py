@@ -217,8 +217,12 @@ Explain this to the student now."""
 
 def _parse_questions_json(raw: str) -> list:
     """
-    Robustly extracts JSON from LLM output.
-    LLMs sometimes wrap JSON in markdown fences or add preamble.
+    Robustly extracts JSON from LLM output using multiple fallback strategies.
+
+    Strategy 1: Direct parse (fast path — works when LLM output is clean).
+    Strategy 2: Fix common JSON errors (trailing commas, single quotes, etc.)
+    Strategy 3: Extract individual {...} objects via regex and parse one-by-one,
+                salvaging every valid question even if others are broken.
     """
     # Strip markdown fences if present
     cleaned = re.sub(r"```(?:json)?", "", raw).strip()
@@ -230,7 +234,60 @@ def _parse_questions_json(raw: str) -> list:
         raise ValueError("No JSON array found in LLM response")
 
     json_str = cleaned[start:end + 1]
-    return json.loads(json_str)
+
+    # ── Strategy 1: Direct parse ──────────────────────────────────────────
+    try:
+        return json.loads(json_str)
+    except json.JSONDecodeError:
+        logger.debug("Strategy 1 (direct parse) failed, trying fixes...")
+
+    # ── Strategy 2: Fix common LLM JSON mistakes ─────────────────────────
+    try:
+        fixed = json_str
+        # Remove trailing commas before ] or }
+        fixed = re.sub(r",\s*([}\]])", r"\1", fixed)
+        # Replace single quotes with double quotes (but not inside words like "don't")
+        fixed = re.sub(r"(?<![a-zA-Z])'|'(?![a-zA-Z])", '"', fixed)
+        # Remove control characters that break JSON
+        fixed = re.sub(r"[\x00-\x1f\x7f]", " ", fixed)
+        result = json.loads(fixed)
+        logger.info("Strategy 2 (fix common errors) recovered %d questions", len(result))
+        return result
+    except json.JSONDecodeError:
+        logger.debug("Strategy 2 (fix common errors) failed, trying object extraction...")
+
+    # ── Strategy 3: Extract individual question objects ───────────────────
+    # Find all top-level {...} blocks and try to parse each independently.
+    # This salvages valid questions even when one object is broken.
+    questions = []
+    # Match balanced braces — handles one level of nesting (e.g. "options": [...])
+    obj_pattern = re.compile(r'\{[^{}]*(?:\{[^{}]*\}[^{}]*)*(?:\[[^\[\]]*\][^{}]*)*\}')
+    candidates = obj_pattern.findall(json_str)
+
+    if not candidates:
+        # Simpler fallback: split on }{ boundary and try each piece
+        candidates = re.findall(r'\{[^}]+\}', json_str)
+
+    for candidate in candidates:
+        try:
+            # Fix trailing commas in this individual object too
+            candidate_fixed = re.sub(r",\s*([}\]])", r"\1", candidate)
+            obj = json.loads(candidate_fixed)
+            # Must look like a question (has at least "question" or "options" key)
+            if isinstance(obj, dict) and ("question" in obj or "options" in obj):
+                questions.append(obj)
+        except json.JSONDecodeError:
+            continue
+
+    if questions:
+        logger.info("Strategy 3 (object extraction) recovered %d/%d questions",
+                     len(questions), len(candidates))
+        return questions
+
+    raise ValueError(
+        f"All JSON parse strategies failed. Raw response length: {len(raw)}. "
+        f"Found {len(candidates)} candidate objects but none were valid."
+    )
 
 
 def _validate_question(q: dict, idx: int) -> dict:
@@ -294,20 +351,32 @@ def generate_mock_test():
             difficulty=gen_req.difficulty,
         )
 
-        raw_response = llm.complete(messages=messages)
+        # Retry each batch up to 2 times — LLM output is non-deterministic,
+        # so a second attempt often produces clean JSON even if the first didn't.
+        MAX_RETRIES = 2
+        batch_success = False
 
-        try:
-            batch_raw = _parse_questions_json(raw_response)
-            batch = [_validate_question(q, len(all_questions) + i) for i, q in enumerate(batch_raw)]
-            all_questions.extend(batch)
-        except (json.JSONDecodeError, ValueError) as e:
-            logger.error("Batch %d parse failed: %s", batch_num, e)
+        for attempt in range(1, MAX_RETRIES + 1):
+            raw_response = llm.complete(messages=messages)
+
+            try:
+                batch_raw = _parse_questions_json(raw_response)
+                batch = [_validate_question(q, len(all_questions) + i) for i, q in enumerate(batch_raw)]
+                all_questions.extend(batch)
+                batch_success = True
+                break
+            except (json.JSONDecodeError, ValueError) as e:
+                logger.warning("Batch %d attempt %d/%d parse failed: %s",
+                               batch_num, attempt, MAX_RETRIES, e)
+
+        if not batch_success:
+            logger.error("Batch %d failed after %d retries", batch_num, MAX_RETRIES)
             # If we have at least some questions, proceed with what we have
             if all_questions:
                 break
             return jsonify({
                 "error": "Question generation failed — the AI returned malformed data. Please try again.",
-                "debug": str(e)
+                "debug": "JSON parse failed after retries"
             }), 500
 
         # Safety: cap at requested count (LLM sometimes generates extra)
