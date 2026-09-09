@@ -9,6 +9,11 @@ set -o errexit  # Exit on any error
 
 echo "── Installing Python dependencies ──"
 pip install --upgrade pip
+
+# Install CPU-only PyTorch FIRST — full PyTorch includes ~800MB of CUDA
+# libraries we don't need. CPU-only version is ~150MB.
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+
 pip install -r requirements.txt
 
 echo "── Creating data directories ──"
