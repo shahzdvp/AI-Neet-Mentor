@@ -17,11 +17,6 @@ venv/
 env/
 .env/
 
-# ── Data (do not commit DB files or vector stores to git) ─────────
-data/
-*.db
-*.sqlite
-*.sqlite3
 
 # ── ML model cache (downloaded by sentence-transformers) ──────────
 .cache/
